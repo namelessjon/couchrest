@@ -12,10 +12,12 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
-begin
-  require 'json'
-rescue LoadError
-  raise "You need install and require your own json compatible library since couchrest rest couldn't load the json/json_pure gem" unless Kernel.const_defined?("JSON")
+unless Kernel.const_defined?("JSON")
+  begin
+    require 'json'
+  rescue LoadError
+    raise "You need install and require your own json compatible library since couchrest rest couldn't load the json/json_pure gem" unless Kernel.const_defined?("JSON")
+  end
 end
 require 'rest_client'
 
