@@ -1,4 +1,3 @@
-require 'delegate'
 
 module CouchRest  
   class Document < Response
