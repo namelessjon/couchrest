@@ -13,12 +13,7 @@
 #    limitations under the License.
 
 require 'rubygems'
-gem 'rest-client', ">= 1.5.1"
-unless Kernel.const_defined?("JSON")
-  gem 'json', '>= 1.4.6'
-  require 'json'
-end
-require 'rest_client'
+require 'json'
 
 # Not sure why this is required, so removed until a reason is found!
 $:.unshift File.dirname(__FILE__) unless
@@ -26,6 +21,7 @@ $:.unshift File.dirname(__FILE__) unless
  $:.include?(File.expand_path(File.dirname(__FILE__)))
     
 require 'couchrest/monkeypatches'
+require 'couchrest/http_error'
 require 'couchrest/rest_api'
 require 'couchrest/support/inheritable_attributes'
 
@@ -43,7 +39,7 @@ module CouchRest
   autoload :Streamer,     'couchrest/helper/streamer'
   autoload :Attachments,  'couchrest/helper/attachments'
   autoload :Upgrade,      'couchrest/helper/upgrade'
- 
+
   # we extend CouchRest with the RestAPI module which gives us acess to
   # the get, post, put, delete and copy
   CouchRest.extend(::RestAPI)
@@ -93,10 +89,7 @@ module CouchRest
       }
     end
 
-    # set proxy to use
-    def proxy url
-      RestClient.proxy = url
-    end
+    attr_accessor :proxy
     
     # ensure that a database exists
     # creates it if it isn't already there

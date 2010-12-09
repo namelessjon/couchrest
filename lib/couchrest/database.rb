@@ -65,7 +65,7 @@ module CouchRest
       keys = params.delete(:keys)
       funcs = funcs.merge({:keys => keys}) if keys
       url = CouchRest.paramify_url "#{@root}/_temp_view", params
-      JSON.parse(RestClient.post(url, funcs.to_json, CouchRest.default_headers))
+      CouchRest.post(url, funcs)
     end
     
     # backwards compatibility is a plus
@@ -108,14 +108,15 @@ module CouchRest
     # GET an attachment directly from CouchDB
     def fetch_attachment(doc, name)
       uri = url_for_attachment(doc, name)
-      RestClient.get uri, CouchRest.default_headers
+      CouchRest.request(:get, uri).body
     end
     
     # PUT an attachment directly to CouchDB
     def put_attachment(doc, name, file, options = {})
       docid = escape_docid(doc['_id'])
       uri = url_for_attachment(doc, name)
-      JSON.parse(RestClient.put(uri, file, CouchRest.default_headers.merge(options)))
+      response = CouchRest.request(:put, uri, file, options)
+      JSON.parse(response.body)
     end
     
     # DELETE an attachment directly from CouchDB
@@ -131,7 +132,7 @@ module CouchRest
           uri = url_for_attachment(doc, name)
           CouchRest.delete(uri)
         else
-          error
+          raise error
         end
       end
     end
@@ -174,7 +175,7 @@ module CouchRest
           uri = "#{@root}/#{slug}"
           uri << "?batch=ok" if batch
           CouchRest.put uri, doc
-        rescue RestClient::ResourceNotFound
+        rescue CouchRest::ResourceNotFound
           p "resource not found when saving even tho an id was passed"
           slug = doc['_id'] = @server.next_uuid
           CouchRest.put "#{@root}/#{slug}", doc
@@ -269,13 +270,9 @@ module CouchRest
         new_doc = yield doc # give it to the caller to be updated
         begin
           resp = self.save_doc new_doc # try to PUT the updated doc into the db
-        rescue RestClient::RequestFailed => e
-          if e.http_code == 409 # Update collision
-            update_limit -= 1
-            last_fail = e
-          else # some other error
-            raise e
-          end
+        rescue CouchRest::Conflict => e
+          update_limit -= 1
+          last_fail = e
         end
       end
 
@@ -298,7 +295,7 @@ module CouchRest
     def recreate!
       delete!
       create!
-    rescue RestClient::ResourceNotFound
+    rescue CouchRest::ResourceNotFound
     ensure
       create!
     end

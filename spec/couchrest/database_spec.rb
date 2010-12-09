@@ -200,7 +200,7 @@ describe CouchRest::Database do
       @db.save_doc({"_id" => "bulk_cache_1", "val" => "test"}, true)
       lambda do
         @db.get('bulk_cache_1')
-      end.should raise_error(RestClient::ResourceNotFound)
+      end.should raise_error(CouchRest::ResourceNotFound)
       @db.bulk_save
       @db.get("bulk_cache_1")["val"].should == "test"
     end
@@ -213,7 +213,7 @@ describe CouchRest::Database do
             {"_id" => "free", "mild" => "yet local"},
             {"another" => ["set","of","keys"]}
           ])
-      rescue RestClient::RequestFailed => e
+      rescue CouchRest::Conflict => e
         # soon CouchDB will provide _which_ docs conflicted
         JSON.parse(e.response.body)['error'].should == 'conflict'
       end
@@ -271,7 +271,7 @@ describe CouchRest::Database do
       @file.close
     end
     it "should save the attachment to a new doc" do
-      r = @db.put_attachment({'_id' => 'attach-this'}, 'couchdb.png', image = @file.read, {:content_type => 'image/png'})
+      r = @db.put_attachment({'_id' => 'attach-this'}, 'couchdb.png', image = @file.read, {"Content-Type" => 'image/png'})
       r['ok'].should == true
       doc = @db.get("attach-this")
       attachment = @db.fetch_attachment(doc,"couchdb.png")
@@ -428,7 +428,7 @@ describe CouchRest::Database do
     it "should create the document" do
       @docid = "http://example.com/stuff.cgi?things=and%20stuff"
       @db.save_doc({'_id' => @docid, 'will-exist' => 'here'})
-      lambda{@db.save_doc({'_id' => @docid})}.should raise_error(RestClient::Request::RequestFailed)
+      lambda{@db.save_doc({'_id' => @docid})}.should raise_error(CouchRest::Conflict)
       @db.get(@docid)['will-exist'].should == 'here'
     end
   end
@@ -445,7 +445,7 @@ describe CouchRest::Database do
     end
     it "should create the document" do
       @db.save_doc({'_id' => 'my-doc', 'will-exist' => 'here'})
-      lambda{@db.save_doc({'_id' => 'my-doc'})}.should raise_error(RestClient::Request::RequestFailed)
+      lambda{@db.save_doc({'_id' => 'my-doc'})}.should raise_error(CouchRest::Conflict)
     end
   end
   
@@ -496,10 +496,10 @@ describe CouchRest::Database do
       @db.save_doc(td2, true)
       lambda do
         @db.get(td1["_id"])
-      end.should raise_error(RestClient::ResourceNotFound)
+      end.should raise_error(CouchRest::ResourceNotFound)
       lambda do
         @db.get(td2["_id"])
-      end.should raise_error(RestClient::ResourceNotFound)
+      end.should raise_error(CouchRest::ResourceNotFound)
       td3 = {"_id" => "td3", "val" => "foo"}
       @db.save_doc(td3, true)
       @db.get(td1["_id"])["val"].should == td1["val"]
@@ -514,7 +514,7 @@ describe CouchRest::Database do
       @db.save_doc(td1, true)
       lambda do
         @db.get(td1["_id"])
-      end.should raise_error(RestClient::ResourceNotFound)
+      end.should raise_error(CouchRest::ResourceNotFound)
       @db.save_doc(td2)
       @db.get(td1["_id"])["val"].should == td1["val"]
       @db.get(td2["_id"])["val"].should == td2["val"]
@@ -577,7 +577,7 @@ describe CouchRest::Database do
           doc['upvotes'] += 1
           doc
         end
-      end.should raise_error(RestClient::RequestFailed)
+      end.should raise_error(CouchRest::Conflict)
     end
     it "should not fail if update_limit is not reached" do
       limit = 5
@@ -619,7 +619,7 @@ describe CouchRest::Database do
         @db.save_doc({'_id' => @docid, 'will-exist' => 'here'})
       end
       it "should fail without a rev" do
-        lambda{@db.copy_doc @doc, @docid}.should raise_error(RestClient::RequestFailed)
+        lambda{@db.copy_doc @doc, @docid}.should raise_error(CouchRest::Conflict)
       end
       it "should succeed with a rev" do
         @to_be_overwritten = @db.get(@docid)

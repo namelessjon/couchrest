@@ -26,16 +26,16 @@ describe CouchRest do
     end
   end
   
-  it "should restart" do
-    @cr.restart!
-    begin
-      @cr.info
-    rescue
-      # Give the couchdb time to restart
-      sleep 0.2
-      retry
-    end
-  end
+  #it "should restart" do
+    #@cr.restart!
+    #begin
+      #@cr.info
+    #rescue
+      ## Give the couchdb time to restart
+      #sleep 0.2
+      #retry
+    #end
+  #end
 
   it "should provide one-time access to uuids" do
     @cr.next_uuid.should_not be_nil
@@ -138,7 +138,7 @@ describe CouchRest do
     #    end
     it "should not create the database automatically" do
       db = CouchRest.database "http://127.0.0.1:5984/couchrest-test"
-      lambda{db.info}.should raise_error(RestClient::ResourceNotFound)      
+      lambda{db.info}.should raise_error(CouchRest::ResourceNotFound)
     end
   end
 
@@ -174,17 +174,7 @@ describe CouchRest do
     it "should PUT the database and raise an error" do
       lambda{
         @cr.create_db(TESTDB)
-      }.should raise_error(RestClient::Request::RequestFailed)
-    end
-  end
-
-  describe "using a proxy for RestClient connections" do
-    it "should set proxy url for RestClient" do
-      CouchRest.proxy 'http://localhost:8888/'
-      proxy_uri = URI.parse(RestClient.proxy)
-      proxy_uri.host.should eql( 'localhost' )
-      proxy_uri.port.should eql( 8888 )
-      CouchRest.proxy nil
+      }.should raise_error(CouchRest::HttpError)
     end
   end
 

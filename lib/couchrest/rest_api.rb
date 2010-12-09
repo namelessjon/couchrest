@@ -1,5 +1,8 @@
-module RestAPI
+require "httpi"
 
+HTTPI::Adapter.use = :net_http
+
+module RestAPI
   def default_headers
     {
       :content_type => :json,
@@ -7,53 +10,57 @@ module RestAPI
     }
   end
 
-  def put(uri, doc = nil)
-    payload = doc.to_json if doc
-    begin
-      JSON.parse(RestClient.put(uri, payload, default_headers))
-    rescue Exception => e
-      if $DEBUG
-        raise "Error while sending a PUT request #{uri}\npayload: #{payload.inspect}\n#{e}"
+  def request method, uri, doc=nil, headers={}
+    request = HTTPI::Request.new
+    request.url     = uri
+    request.proxy   = CouchRest.proxy if CouchRest.proxy
+    request.body    = doc if doc
+    request.headers = {
+      "Content-Type" => "application/json",
+      "Accept"       => "application/json"
+    }.merge(headers)
+
+    response = HTTPI.request(method, request)
+    raise http_error(response) if response.error?
+    response
+  end
+
+  def http_error response
+    klass = 
+      case response.code
+      when 404 then
+        CouchRest::ResourceNotFound
+      when 409 then
+        CouchRest::Conflict
       else
-        raise e
+        CouchRest::HttpError
       end
-    end
+    klass.new(response)
+  end
+
+  def put(uri, doc=nil, headers={})
+    response = request(:put, uri, doc.to_json, headers)
+    JSON.parse(response.body, :max_nesting => false)
   end
 
   def get(uri)
-    begin
-      JSON.parse(RestClient.get(uri, default_headers), :max_nesting => false)
-    rescue => e
-      if $DEBUG
-        raise "Error while sending a GET request #{uri}\n: #{e}"
-      else
-        raise e
-      end
-    end
+    response = request(:get, uri)
+    JSON.parse(response.body, :max_nesting => false)
   end
 
-  def post(uri, doc = nil)
-    payload = doc.to_json if doc
-    begin
-      JSON.parse(RestClient.post(uri, payload, default_headers))
-    rescue Exception => e
-      if $DEBUG
-        raise "Error while sending a POST request #{uri}\npayload: #{payload.inspect}\n#{e}"
-      else
-        raise e
-      end
-    end
+  def post(uri, doc=nil)
+    response = request(:post, uri, doc.to_json)
+    JSON.parse(response.body, :max_nesting => false)
   end
 
   def delete(uri)
-    JSON.parse(RestClient.delete(uri, default_headers))
+    response = request(:delete, uri)
+    JSON.parse(response.body, :max_nesting => false)
   end
 
   def copy(uri, destination) 
-    JSON.parse(RestClient::Request.execute( :method => :copy,
-                                            :url => uri,
-                                            :headers => default_headers.merge('Destination' => destination)
-                                          ).to_s)
+    headers = {'X-HTTP-Method-Override' => 'COPY', 'Destination' => destination}
+    response = request(:post, uri, nil, headers)
+    JSON.parse(response.body, :max_nesting => false)
   end 
-
 end

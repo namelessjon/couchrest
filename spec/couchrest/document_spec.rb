@@ -106,7 +106,7 @@ describe CouchRest::Document do
       doc = CouchRest::Document.new({"_id" => "bulkdoc", "val" => 3})
       doc.database = @db
       doc.save(true)
-      lambda { doc.database.get(doc["_id"]) }.should raise_error(RestClient::ResourceNotFound)
+      lambda { doc.database.get(doc["_id"]) }.should raise_error(CouchRest::ResourceNotFound)
       doc.database.bulk_save
       doc.database.get(doc["_id"])["val"].should == doc["val"]
     end
@@ -195,7 +195,7 @@ describe CouchRest::Document do
         @db.save_doc({'_id' => @docid, 'will-exist' => 'here'})
       end
       it "should fail without a rev" do
-        lambda{@doc.copy @docid}.should raise_error(RestClient::RequestFailed)
+        lambda{@doc.copy @docid}.should raise_error(CouchRest::Conflict)
       end
       it "should succeed with a rev" do
         @to_be_overwritten = @db.get(@docid)
@@ -268,7 +268,7 @@ describe "dealing with attachments" do
     end
     
     it "removes it" do
-      lambda { @db.fetch_attachment(@doc, 'test.html').should }.should raise_error(RestClient::ResourceNotFound)
+      lambda { @db.fetch_attachment(@doc, 'test.html').should }.should raise_error(CouchRest::ResourceNotFound)
     end
     
     it "updates the revision" do

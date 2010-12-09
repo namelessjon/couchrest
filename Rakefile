@@ -5,7 +5,7 @@ $LOAD_PATH.unshift File.expand_path("../lib", __FILE__)
 require 'couchrest'
 
 begin
-  require 'spec/rake/spectask'
+  require 'rspec/core/rake_task'
 rescue LoadError
   puts <<-EOS
 To use rspec for testing you must install rspec gem:
@@ -14,39 +14,16 @@ EOS
   exit(0)
 end
 
-begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |gemspec|
-    gemspec.name = "couchrest"
-    gemspec.summary = "Lean and RESTful interface to CouchDB."
-    gemspec.description = "CouchRest provides a simple interface on top of CouchDB's RESTful HTTP API, as well as including some utility scripts for managing views and attachments."
-    gemspec.email = "jchris@apache.org"
-    gemspec.homepage = "http://github.com/couchrest/couchrest"
-    gemspec.authors = ["J. Chris Anderson", "Matt Aimonetti", "Marcos Tapajos", "Will Leinweber", "Sam Lown"]
-    gemspec.extra_rdoc_files = %w( README.md LICENSE THANKS.md )
-    gemspec.files = %w( LICENSE README.md Rakefile THANKS.md history.txt couchrest.gemspec) + Dir["{examples,lib,spec,utils}/**/*"] - Dir["spec/tmp"]
-    gemspec.has_rdoc = true
-    gemspec.add_dependency("rest-client", "~> 1.5.1")
-    gemspec.add_dependency("mime-types", "~> 1.15")
-    gemspec.add_dependency("json", "~> 1.4.6")
-    gemspec.version = CouchRest::VERSION
-    gemspec.date = Time.now.strftime("%Y-%m-%d")
-    gemspec.require_path = "lib"
-  end
-rescue LoadError
-  puts "Jeweler not available. Install it with: gem install jeweler"
-end
-
 desc "Run all specs"
-Spec::Rake::SpecTask.new('spec') do |t|
-	t.spec_opts = ["--color"]
-	t.spec_files = FileList['spec/**/*_spec.rb']
+RSpec::Core::RakeTask.new('spec') do |t|
+	t.rspec_opts = ["--color"]
+	t.pattern = 'spec/**/*_spec.rb'
 end
 
 desc "Print specdocs"
-Spec::Rake::SpecTask.new(:doc) do |t|
-	t.spec_opts = ["--format", "specdoc"]
-	t.spec_files = FileList['spec/*_spec.rb']
+RSpec::Core::RakeTask.new(:doc) do |t|
+	t.rspec_opts = ["--format", "specdoc"]
+	t.pattern = 'spec/*_spec.rb'
 end
 
 desc "Generate the rdoc"

@@ -53,52 +53,6 @@ module CouchRest
   end
 end
 
-# inject our logger into key RestClient methods
-module RestClient 
- 
-  def self.get(uri, headers=nil)
-    start_query = Time.now
-    log = {:method => :get, :uri => uri, :headers => headers}
-    response = super(uri, headers=nil)
-    end_query = Time.now
-    log[:duration] = (end_query - start_query)
-    CouchRest::Logger.record(log)
-    response
-  end 
-  
-  def self.post(uri, payload, headers=nil)
-    start_query = Time.now
-    log = {:method => :post, :uri => uri, :payload =>  (payload ? (JSON.load(payload) rescue 'parsing error') : nil), :headers => headers}
-    response = super(uri, payload, headers=nil)
-    end_query = Time.now
-    log[:duration] = (end_query - start_query)
-    CouchRest::Logger.record(log)
-    response
-  end
-   
-  def self.put(uri, payload, headers=nil)
-    start_query = Time.now
-    log = {:method => :put, :uri => uri, :payload => (payload ? (JSON.load(payload) rescue 'parsing error') : nil), :headers => headers}
-    response = super(uri, payload, headers=nil)
-    end_query = Time.now
-    log[:duration] = (end_query - start_query)
-    CouchRest::Logger.record(log)
-    response
-  end
-  
-  def self.delete(uri, headers=nil)
-    start_query = Time.now
-    log = {:method => :delete, :uri => uri, :headers => headers}
-    response = super(uri, headers=nil)
-    end_query = Time.now
-    log[:duration] = (end_query - start_query)
-    CouchRest::Logger.record(log)
-    response
-  end   
-  
-end 
-
-
 # Advanced usage example 
 #
 #
