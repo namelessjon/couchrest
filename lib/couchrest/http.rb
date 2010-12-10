@@ -1,8 +1,6 @@
 require "httpi"
 require "forwardable"
 
-HTTPI::Adapter.use = :net_http
-
 module CouchRest
   class HTTPError < StandardError
     extend Forwardable
@@ -19,6 +17,8 @@ module CouchRest
   module HTTP
     extend self
 
+    attr_accessor :adapter
+
     def request method, uri, doc=nil, headers={}
       request = HTTPI::Request.new
       request.url     = uri
@@ -29,7 +29,7 @@ module CouchRest
         "Accept"       => "application/json"
       }.merge(headers)
 
-      response = HTTPI.request(method, request)
+      response = HTTPI.request(method, request, adapter)
       raise http_error(response) if response.error?
       response
     end

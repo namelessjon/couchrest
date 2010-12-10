@@ -18,6 +18,8 @@ require 'couchrest/http'
 require 'couchrest/server'
 require 'couchrest/database'
 
+CouchRest::HTTP.adapter = :net_http
+
 # = CouchDB, close to the metal
 module CouchRest
   VERSION = '1.0.1'
