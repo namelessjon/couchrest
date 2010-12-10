@@ -13,6 +13,7 @@ module CouchRest
   end
   class NotFound < HTTPError; end
   class Conflict < HTTPError; end
+  class Invalid < HTTPError; end
 
   module HTTP
     extend self
@@ -66,11 +67,11 @@ module CouchRest
       klass = 
         case response.code
         when 404 then
-          CouchRest::NotFound
+          NotFound
         when 409 then
-          CouchRest::Conflict
+          Conflict
         else
-          CouchRest::HTTPError
+          HTTPError
         end
       klass.new(response)
     end
