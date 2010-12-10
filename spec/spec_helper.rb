@@ -12,15 +12,3 @@ unless defined?(FIXTURE_PATH)
   TEST_SERVER    = CouchRest.new COUCHHOST
   DB = TEST_SERVER.database(TESTDB)
 end
-
-RSpec.configure do |config|
-  config.before(:all) { DB.recreate! }
-  
-  config.after(:all) do
-    cr = TEST_SERVER
-    test_dbs = cr.databases.select { |db| db =~ /^#{TESTDB}/ }
-    test_dbs.each do |db|
-      cr.database(db).delete! rescue nil
-    end
-  end
-end
