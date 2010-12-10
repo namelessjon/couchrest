@@ -1,7 +1,7 @@
 require "forwardable"
 
 module CouchRest
-  class HttpError < StandardError
+  class HTTPError < StandardError
     extend Forwardable
 
     def_delegators :@response, :code, :headers, :body
@@ -11,6 +11,6 @@ module CouchRest
     end
   end
 
-  class ResourceNotFound < HttpError; end
-  class Conflict < HttpError; end
+  class ResourceNotFound < HTTPError; end
+  class Conflict < HTTPError; end
 end

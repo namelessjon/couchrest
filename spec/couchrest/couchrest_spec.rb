@@ -163,7 +163,7 @@ describe CouchRest do
     it "should PUT the database and raise an error" do
       lambda{
         @cr.create_db(TESTDB)
-      }.should raise_error(CouchRest::HttpError)
+      }.should raise_error(CouchRest::HTTPError)
     end
   end
 end

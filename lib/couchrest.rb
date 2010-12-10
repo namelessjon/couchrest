@@ -14,19 +14,14 @@
 
 require 'json'
     
-require 'couchrest/http_error'
-require 'couchrest/rest_api'
+require 'couchrest/http'
 require 'couchrest/server'
 require 'couchrest/database'
 
 # = CouchDB, close to the metal
 module CouchRest
-  VERSION    = '1.0.1'
+  VERSION = '1.0.1'
 
-  # we extend CouchRest with the RestAPI module which gives us acess to
-  # the get, post, put, delete and copy
-  CouchRest.extend(::RestAPI)
-  
   # The CouchRest module methods handle the basic JSON serialization 
   # and deserialization, as well as query parameters. The module also includes
   # some helpers for tasks like instantiating a new Database or Server instance.

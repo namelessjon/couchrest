@@ -8,7 +8,7 @@ module CouchRest
   
     # Lists all databases on the server
     def databases
-      CouchRest.get "#{@uri}/_all_dbs"
+      HTTP.get "#{@uri}/_all_dbs"
     end
   
     # Returns a CouchRest::Database for the given name
@@ -24,25 +24,25 @@ module CouchRest
   
     # GET the welcome message
     def info
-      CouchRest.get "#{@uri}/"
+      HTTP.get "#{@uri}/"
     end
 
     # Create a database
     def create_db(name)
-      CouchRest.put "#{@uri}/#{name}"
+      HTTP.put "#{@uri}/#{name}"
       database(name)
     end
 
     # Restart the CouchDB instance
     def restart!
-      CouchRest.post "#{@uri}/_restart"
+      HTTP.post "#{@uri}/_restart"
     end
 
     # Retrive an unused UUID from CouchDB. Server instances manage caching a list of unused UUIDs.
     def next_uuid(count = @uuid_batch_count)
       @uuids ||= []
       if @uuids.empty?
-        @uuids = CouchRest.get("#{@uri}/_uuids?count=#{count}")["uuids"]
+        @uuids = HTTP.get("#{@uri}/_uuids?count=#{count}")["uuids"]
       end
       @uuids.pop
     end

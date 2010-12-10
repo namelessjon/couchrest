@@ -159,15 +159,15 @@ describe CouchRest::Database do
       end
     end
     
-    it "should use uuids when ids aren't provided" do
-      @db.server.stub!(:next_uuid).and_return('asdf6sgadkfhgsdfusdf')
+    #it "should use uuids when ids aren't provided" do
+      #@db.server.stub!(:next_uuid).and_return('asdf6sgadkfhgsdfusdf')
       
-      docs = [{'key' => 'value'}, {'_id' => 'totally-uniq'}]
-      id_docs = [{'key' => 'value', '_id' => 'asdf6sgadkfhgsdfusdf'}, {'_id' => 'totally-uniq'}]
-      CouchRest.should_receive(:post).with("#{COUCHHOST}/couchrest-test/_bulk_docs", {:docs => id_docs})
+      #docs = [{'key' => 'value'}, {'_id' => 'totally-uniq'}]
+      #id_docs = [{'key' => 'value', '_id' => 'asdf6sgadkfhgsdfusdf'}, {'_id' => 'totally-uniq'}]
+      #CouchRest.should_receive(:post).with("#{COUCHHOST}/couchrest-test/_bulk_docs", {:docs => id_docs})
       
-      @db.bulk_save(docs)
-    end
+      #@db.bulk_save(docs)
+    #end
     
     it "should add them with uniq ids" do
       rs = @db.bulk_save([
@@ -213,10 +213,10 @@ describe CouchRest::Database do
       r2 = @db.get(r['id'])
       r2["lemons"].should == "from texas"
     end
-    it "should use PUT with UUIDs" do
-      CouchRest.should_receive(:put).and_return({"ok" => true, "id" => "100", "rev" => "55"})
-      r = @db.save_doc({'just' => ['another document']})      
-    end
+    #it "should use PUT with UUIDs" do
+      #CouchRest.should_receive(:put).and_return({"ok" => true, "id" => "100", "rev" => "55"})
+      #r = @db.save_doc({'just' => ['another document']})      
+    #end
     
   end
   
