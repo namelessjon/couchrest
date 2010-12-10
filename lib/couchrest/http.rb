@@ -11,7 +11,7 @@ module CouchRest
       @response = response
     end
   end
-  class ResourceNotFound < HTTPError; end
+  class NotFound < HTTPError; end
   class Conflict < HTTPError; end
 
   module HTTP
@@ -66,7 +66,7 @@ module CouchRest
       klass = 
         case response.code
         when 404 then
-          CouchRest::ResourceNotFound
+          CouchRest::NotFound
         when 409 then
           CouchRest::Conflict
         else

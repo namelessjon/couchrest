@@ -1,18 +1,7 @@
+$LOAD_PATH.unshift "lib"
 require 'rake'
 require "rake/rdoctask"
-
-$LOAD_PATH.unshift File.expand_path("../lib", __FILE__)
-require 'couchrest'
-
-begin
-  require 'rspec/core/rake_task'
-rescue LoadError
-  puts <<-EOS
-To use rspec for testing you must install rspec gem:
-    gem install rspec
-EOS
-  exit(0)
-end
+require 'rspec/core/rake_task'
 
 desc "Run all specs"
 RSpec::Core::RakeTask.new('spec') do |t|
@@ -36,12 +25,3 @@ end
 
 desc "Run the rspec"
 task :default => :spec
-
-module Rake
-  def self.remove_task(task_name)
-    Rake.application.instance_variable_get('@tasks').delete(task_name.to_s)
-  end
-end
-
-Rake.remove_task("github:release")
-Rake.remove_task("release")

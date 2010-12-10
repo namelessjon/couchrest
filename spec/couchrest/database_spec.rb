@@ -184,7 +184,7 @@ describe CouchRest::Database do
       @db.save_doc({"_id" => "bulk_cache_1", "val" => "test"}, true)
       lambda do
         @db.get('bulk_cache_1')
-      end.should raise_error(CouchRest::ResourceNotFound)
+      end.should raise_error(CouchRest::NotFound)
       @db.bulk_save
       @db.get("bulk_cache_1")["val"].should == "test"
     end
@@ -480,10 +480,10 @@ describe CouchRest::Database do
       @db.save_doc(td2, true)
       lambda do
         @db.get(td1["_id"])
-      end.should raise_error(CouchRest::ResourceNotFound)
+      end.should raise_error(CouchRest::NotFound)
       lambda do
         @db.get(td2["_id"])
-      end.should raise_error(CouchRest::ResourceNotFound)
+      end.should raise_error(CouchRest::NotFound)
       td3 = {"_id" => "td3", "val" => "foo"}
       @db.save_doc(td3, true)
       @db.get(td1["_id"])["val"].should == td1["val"]
@@ -498,7 +498,7 @@ describe CouchRest::Database do
       @db.save_doc(td1, true)
       lambda do
         @db.get(td1["_id"])
-      end.should raise_error(CouchRest::ResourceNotFound)
+      end.should raise_error(CouchRest::NotFound)
       @db.save_doc(td2)
       @db.get(td1["_id"])["val"].should == td1["val"]
       @db.get(td2["_id"])["val"].should == td2["val"]

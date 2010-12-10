@@ -155,7 +155,7 @@ module CouchRest
           uri = "#{@root}/#{slug}"
           uri << "?batch=ok" if batch
           HTTP.put uri, doc
-        rescue CouchRest::ResourceNotFound
+        rescue CouchRest::NotFound
           p "resource not found when saving even tho an id was passed"
           slug = doc['_id'] = @server.next_uuid
           HTTP.put "#{@root}/#{slug}", doc
@@ -275,7 +275,7 @@ module CouchRest
     def recreate!
       delete!
       create!
-    rescue CouchRest::ResourceNotFound
+    rescue CouchRest::NotFound
     ensure
       create!
     end

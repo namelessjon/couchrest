@@ -127,7 +127,7 @@ describe CouchRest do
     #    end
     it "should not create the database automatically" do
       db = CouchRest.database "http://127.0.0.1:5984/couchrest-test"
-      lambda{db.info}.should raise_error(CouchRest::ResourceNotFound)
+      lambda{db.info}.should raise_error(CouchRest::NotFound)
     end
   end
 
