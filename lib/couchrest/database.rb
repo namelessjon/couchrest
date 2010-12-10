@@ -19,7 +19,6 @@ module CouchRest
       @host = server.uri
       @uri  = "/#{name.gsub('/','%2F')}"
       @root = host + uri
-      @streamer = Streamer.new(self)
       @bulk_save_cache = []
       @bulk_save_cache_limit = 500  # must be smaller than the uuid count
     end
@@ -82,11 +81,7 @@ module CouchRest
       if keys
         CouchRest.post(url, {:keys => keys})
       else
-        if block_given?
-          @streamer.view("_design/#{dname}/_view/#{vname}", params, &block)
-        else
-          CouchRest.get url
-        end
+        CouchRest.get url
       end
     end
     
@@ -95,14 +90,6 @@ module CouchRest
       slug = escape_docid(id)
       url = CouchRest.paramify_url("#{@root}/#{slug}", params)
       result = CouchRest.get(url)
-      return result unless result.is_a?(Hash)
-      doc = if /^_design/ =~ result["_id"]
-        Design.new(result)
-      else
-        Document.new(result)
-      end
-      doc.database = self
-      doc
     end
     
     # GET an attachment directly from CouchDB

@@ -177,16 +177,4 @@ describe CouchRest do
       }.should raise_error(CouchRest::HttpError)
     end
   end
-
-  describe "Including old ExtendedDocument library" do
-
-    it "should raise an exception" do
-      lambda do
-        class TestDoc < CouchRest::ExtendedDocument
-          attr_reader :fail
-        end
-      end.should raise_error(RuntimeError)
-    end
-
-  end
 end

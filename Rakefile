@@ -16,7 +16,7 @@ end
 
 desc "Run all specs"
 RSpec::Core::RakeTask.new('spec') do |t|
-	t.rspec_opts = ["--color"]
+	t.rspec_opts = ["--color", "--fail-fast"]
 	t.pattern = 'spec/**/*_spec.rb'
 end
 

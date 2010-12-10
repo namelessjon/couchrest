@@ -131,21 +131,6 @@ describe CouchRest::Database do
       rs = @db.view('first/test', :keys => ["another", "wild"])
       rs['rows'].length.should == 2
     end
-    it "should accept a block" do
-      rows = []
-      rs = @db.view('first/test', :include_docs => true) do |row|
-        rows << row
-      end
-      rows.length.should == 3
-      rs["total_rows"].should == 3
-    end
-    it "should accept a block with several params" do
-      rows = []
-      rs = @db.view('first/test', :include_docs => true, :limit => 2) do |row|
-        rows << row
-      end
-      rows.length.should == 2
-    end
   end
 
   describe "GET (document by id) when the doc exists" do
@@ -171,7 +156,7 @@ describe CouchRest::Database do
           {"another" => ["set","of","keys"]}
         ])
       rs.each do |r|
-        @db.get(r['id']).rev.should == r["rev"]
+        @db.get(r['id'])["_rev"].should == r["rev"]
       end
     end
     
@@ -192,7 +177,7 @@ describe CouchRest::Database do
           {"another" => ["set","of","keys"]}
         ])
       rs.each do |r|
-        @db.get(r['id']).rev.should == r["rev"]
+        @db.get(r['id'])["_rev"].should == r["rev"]
       end
     end
 

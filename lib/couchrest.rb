@@ -12,33 +12,16 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
-require 'rubygems'
 require 'json'
-
-# Not sure why this is required, so removed until a reason is found!
-$:.unshift File.dirname(__FILE__) unless
- $:.include?(File.dirname(__FILE__)) ||
- $:.include?(File.expand_path(File.dirname(__FILE__)))
     
-require 'couchrest/monkeypatches'
 require 'couchrest/http_error'
 require 'couchrest/rest_api'
-require 'couchrest/support/inheritable_attributes'
+require 'couchrest/server'
+require 'couchrest/database'
 
 # = CouchDB, close to the metal
 module CouchRest
   VERSION    = '1.0.1'
-  
-  autoload :Server,       'couchrest/server'
-  autoload :Database,     'couchrest/database'
-  autoload :Response,     'couchrest/response'
-  autoload :Document,     'couchrest/document'
-  autoload :Design,       'couchrest/design'
-  autoload :Model,        'couchrest/model'
-  autoload :Pager,        'couchrest/helper/pager'
-  autoload :Streamer,     'couchrest/helper/streamer'
-  autoload :Attachments,  'couchrest/helper/attachments'
-  autoload :Upgrade,      'couchrest/helper/upgrade'
 
   # we extend CouchRest with the RestAPI module which gives us acess to
   # the get, post, put, delete and copy
@@ -117,16 +100,4 @@ module CouchRest
       url
     end
   end # class << self
-end
-# For the sake of backwards compatability, generate a dummy ExtendedDocument class
-# which should be replaced by real library: couchrest_extended_document.
-#
-# Added 2010-05-10 by Sam Lown. Please remove at some point in the future.
-#
-class CouchRest::ExtendedDocument < CouchRest::Document
-
-  def self.inherited(subclass)
-    raise "ExtendedDocument is no longer included in CouchRest base driver, see couchrest_extended_document gem"
-  end
-
 end
