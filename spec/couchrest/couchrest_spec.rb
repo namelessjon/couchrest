@@ -26,17 +26,6 @@ describe CouchRest do
     end
   end
   
-  #it "should restart" do
-    #@cr.restart!
-    #begin
-      #@cr.info
-    #rescue
-      ## Give the couchdb time to restart
-      #sleep 0.2
-      #retry
-    #end
-  #end
-
   it "should provide one-time access to uuids" do
     @cr.next_uuid.should_not be_nil
   end
