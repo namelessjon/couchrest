@@ -443,18 +443,14 @@ describe CouchRest::Database do
     it "should start with the document" do
       @doc['will-exist'].should == 'here'
       @db.get(@docid)['now'].should == 'save'
+      @db.get(@docid)["_id"].should == @docid
     end
     it "should save with url id" do
       doc = @db.get(@docid)
       doc['yaml'] = ['json', 'word.']
       @db.save_doc doc
-      p doc["_id"]
-      p RockingChair::Server.databases["couchrest-test"][doc["_id"]]
-      @db.get(@docid)["_id"].should == doc["_id"]
-      @db.get(@docrev)["_rev"].should == doc["_rev"]
-
-      #@db.get(@docid)['yaml'].should == ['json', 'word.']
-      1.should == 2
+      @docid.should == doc["_id"]
+      @db.get(@docid)['yaml'].should == ['json', 'word.']
     end
     it "should fail to resave without the rev" do
       @doc['them-keys'] = 'huge'

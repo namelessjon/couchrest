@@ -4,7 +4,7 @@ require "rspec"
 require "couchrest"
 require "rocking_chair"
 
-CouchRest::HTTP.adapter = :rocking_chair
+#CouchRest::HTTP.adapter = :rocking_chair
 
 unless defined?(FIXTURE_PATH)
   FIXTURE_PATH = File.join(File.dirname(__FILE__), '/fixtures')
