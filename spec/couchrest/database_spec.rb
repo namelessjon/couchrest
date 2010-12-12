@@ -220,193 +220,193 @@ describe CouchRest::Database do
     
   end
   
-  describe "fetch_attachment" do
-    before do
-      @attach = "<html><head><title>My Doc</title></head><body><p>Has words.</p></body></html>"
-      @doc = {
-        "_id" => "mydocwithattachment",
-        "field" => ["some value"],
-        "_attachments" => {
-          "test.html" => {
-            "type" => "text/html",
-            "data" => @attach
-          }
-        }
-      }
-      @db.save_doc(@doc)
-    end
+  #describe "fetch_attachment" do
+    #before do
+      #@attach = "<html><head><title>My Doc</title></head><body><p>Has words.</p></body></html>"
+      #@doc = {
+        #"_id" => "mydocwithattachment",
+        #"field" => ["some value"],
+        #"_attachments" => {
+          #"test.html" => {
+            #"type" => "text/html",
+            #"data" => @attach
+          #}
+        #}
+      #}
+      #@db.save_doc(@doc)
+    #end
     
-    # Depreacated
-    # it "should get the attachment with the doc's _id" do
-    #   @db.fetch_attachment("mydocwithattachment", "test.html").should == @attach
-    # end
+    ## Depreacated
+    ## it "should get the attachment with the doc's _id" do
+    ##   @db.fetch_attachment("mydocwithattachment", "test.html").should == @attach
+    ## end
     
-    it "should get the attachment with the doc itself" do
-      @db.fetch_attachment(@db.get('mydocwithattachment'), 'test.html').should == @attach
-    end
-  end
+    #it "should get the attachment with the doc itself" do
+      #@db.fetch_attachment(@db.get('mydocwithattachment'), 'test.html').should == @attach
+    #end
+  #end
   
-  describe "PUT attachment from file" do
-    before(:each) do
-      filename = FIXTURE_PATH + '/attachments/couchdb.png'
-      @file = File.open(filename, "rb")
-    end
-    after(:each) do
-      @file.close
-    end
-    it "should save the attachment to a new doc" do
-      r = @db.put_attachment({'_id' => 'attach-this'}, 'couchdb.png', image = @file.read, {"Content-Type" => 'image/png'})
-      r['ok'].should == true
-      doc = @db.get("attach-this")
-      attachment = @db.fetch_attachment(doc,"couchdb.png")
-      if attachment.respond_to?(:net_http_res)  
-        attachment.net_http_res.body.should == image
-      else
-        attachment.should == image
-      end
-    end
-  end
+  #describe "PUT attachment from file" do
+    #before(:each) do
+      #filename = FIXTURE_PATH + '/attachments/couchdb.png'
+      #@file = File.open(filename, "rb")
+    #end
+    #after(:each) do
+      #@file.close
+    #end
+    #it "should save the attachment to a new doc" do
+      #r = @db.put_attachment({'_id' => 'attach-this'}, 'couchdb.png', image = @file.read, {"Content-Type" => 'image/png'})
+      #r['ok'].should == true
+      #doc = @db.get("attach-this")
+      #attachment = @db.fetch_attachment(doc,"couchdb.png")
+      #if attachment.respond_to?(:net_http_res)  
+        #attachment.net_http_res.body.should == image
+      #else
+        #attachment.should == image
+      #end
+    #end
+  #end
 
-  describe "PUT document with attachment" do
-    before(:each) do
-      @attach = "<html><head><title>My Doc</title></head><body><p>Has words.</p></body></html>"
-      doc = {
-        "_id" => "mydocwithattachment",
-        "field" => ["some value"],
-        "_attachments" => {
-          "test.html" => {
-            "type" => "text/html",
-            "data" => @attach
-          }
-        }
-      }
-      @db.save_doc(doc)
-      @doc = @db.get("mydocwithattachment")
-    end
-    it "should save and be indicated" do
-      @doc['_attachments']['test.html']['length'].should == @attach.length
-    end
-    it "should be there" do
-      attachment = @db.fetch_attachment(@doc,"test.html")
-      attachment.should == @attach
-    end
-  end
+  #describe "PUT document with attachment" do
+    #before(:each) do
+      #@attach = "<html><head><title>My Doc</title></head><body><p>Has words.</p></body></html>"
+      #doc = {
+        #"_id" => "mydocwithattachment",
+        #"field" => ["some value"],
+        #"_attachments" => {
+          #"test.html" => {
+            #"type" => "text/html",
+            #"data" => @attach
+          #}
+        #}
+      #}
+      #@db.save_doc(doc)
+      #@doc = @db.get("mydocwithattachment")
+    #end
+    #it "should save and be indicated" do
+      #@doc['_attachments']['test.html']['length'].should == @attach.length
+    #end
+    #it "should be there" do
+      #attachment = @db.fetch_attachment(@doc,"test.html")
+      #attachment.should == @attach
+    #end
+  #end
   
-  describe "PUT document with attachment stub" do
-    before(:each) do
-      @attach = "<html><head><title>My Doc</title></head><body><p>Has words.</p></body></html>"
-      doc = {
-        '_id' => 'mydocwithattachment',
-        'field' => ['some_value'],
-        '_attachments' => {
-          'test.html' => {
-            'type' => 'text/html', 'data' => @attach
-          }
-        }
-      }
-      @db.save_doc(doc)
-      doc['_rev'].should_not be_nil
-      doc['field'] << 'another value'
-      @db.save_doc(doc)["ok"].should be_true
-    end
+  #describe "PUT document with attachment stub" do
+    #before(:each) do
+      #@attach = "<html><head><title>My Doc</title></head><body><p>Has words.</p></body></html>"
+      #doc = {
+        #'_id' => 'mydocwithattachment',
+        #'field' => ['some_value'],
+        #'_attachments' => {
+          #'test.html' => {
+            #'type' => 'text/html', 'data' => @attach
+          #}
+        #}
+      #}
+      #@db.save_doc(doc)
+      #doc['_rev'].should_not be_nil
+      #doc['field'] << 'another value'
+      #@db.save_doc(doc)["ok"].should be_true
+    #end
     
-    it 'should be there' do
-      doc = @db.get('mydocwithattachment')
-      attachment = @db.fetch_attachment(doc, 'test.html')
-      Base64.decode64(attachment).should == @attach
-    end
-  end
+    #it 'should be there' do
+      #doc = @db.get('mydocwithattachment')
+      #attachment = @db.fetch_attachment(doc, 'test.html')
+      #Base64.decode64(attachment).should == @attach
+    #end
+  #end
 
-  describe "PUT document with multiple attachments" do
-    before(:each) do
-      @attach = "<html><head><title>My Doc</title></head><body><p>Has words.</p></body></html>"
-      @attach2 = "<html><head><title>Other Doc</title></head><body><p>Has more words.</p></body></html>"
-      @doc = {
-        "_id" => "mydocwithattachment",
-        "field" => ["some value"],
-        "_attachments" => {
-          "test.html" => {
-            "type" => "text/html",
-            "data" => @attach
-          },
-          "other.html" => {
-            "type" => "text/html",
-            "data" => @attach2
-          }
-        }
-      }
-      @db.save_doc(@doc)
-      @doc = @db.get("mydocwithattachment")
-    end
-    it "should save and be indicated" do
-      @doc['_attachments']['test.html']['length'].should == @attach.length
-      @doc['_attachments']['other.html']['length'].should == @attach2.length
-    end
-    it "should be there" do
-      attachment = @db.fetch_attachment(@doc,"test.html")
-      attachment.should == @attach
-    end
-    it "should be there" do
-      attachment = @db.fetch_attachment(@doc,"other.html")
-      attachment.should == @attach2
-    end
-  end
+  #describe "PUT document with multiple attachments" do
+    #before(:each) do
+      #@attach = "<html><head><title>My Doc</title></head><body><p>Has words.</p></body></html>"
+      #@attach2 = "<html><head><title>Other Doc</title></head><body><p>Has more words.</p></body></html>"
+      #@doc = {
+        #"_id" => "mydocwithattachment",
+        #"field" => ["some value"],
+        #"_attachments" => {
+          #"test.html" => {
+            #"type" => "text/html",
+            #"data" => @attach
+          #},
+          #"other.html" => {
+            #"type" => "text/html",
+            #"data" => @attach2
+          #}
+        #}
+      #}
+      #@db.save_doc(@doc)
+      #@doc = @db.get("mydocwithattachment")
+    #end
+    #it "should save and be indicated" do
+      #@doc['_attachments']['test.html']['length'].should == @attach.length
+      #@doc['_attachments']['other.html']['length'].should == @attach2.length
+    #end
+    #it "should be there" do
+      #attachment = @db.fetch_attachment(@doc,"test.html")
+      #attachment.should == @attach
+    #end
+    #it "should be there" do
+      #attachment = @db.fetch_attachment(@doc,"other.html")
+      #attachment.should == @attach2
+    #end
+  #end
   
-  describe "DELETE an attachment directly from the database" do
-    before(:each) do
-      doc = {
-        '_id' => 'mydocwithattachment',
-        '_attachments' => {
-          'test.html' => {
-            'type' => 'text/html',
-            'data' => "<html><head><title>My Doc</title></head><body><p>Has words.</p></body></html>"
-          }
-        }
-      }
-      @db.save_doc(doc)
-      @doc = @db.get('mydocwithattachment')
-    end
-    it "should delete the attachment" do
-      lambda { @db.fetch_attachment(@doc,'test.html') }.should_not raise_error
-      @db.delete_attachment(@doc, "test.html")  
-      @doc = @db.get('mydocwithattachment') # avoid getting a 409
-      lambda{ @db.fetch_attachment(@doc,'test.html')}.should raise_error
-    end
+  #describe "DELETE an attachment directly from the database" do
+    #before(:each) do
+      #doc = {
+        #'_id' => 'mydocwithattachment',
+        #'_attachments' => {
+          #'test.html' => {
+            #'type' => 'text/html',
+            #'data' => "<html><head><title>My Doc</title></head><body><p>Has words.</p></body></html>"
+          #}
+        #}
+      #}
+      #@db.save_doc(doc)
+      #@doc = @db.get('mydocwithattachment')
+    #end
+    #it "should delete the attachment" do
+      #lambda { @db.fetch_attachment(@doc,'test.html') }.should_not raise_error
+      #@db.delete_attachment(@doc, "test.html")  
+      #@doc = @db.get('mydocwithattachment') # avoid getting a 409
+      #lambda{ @db.fetch_attachment(@doc,'test.html')}.should raise_error
+    #end
     
-    it "should force a delete even if we get a 409" do
-      @doc['new_attribute'] = 'something new'
-      @db.put_attachment(@doc, 'test', File.open(File.join(FIXTURE_PATH, 'attachments', 'test.html')).read)
-      # at this point the revision number changed, if we try to save doc one more time
-      # we would get a 409.
-      lambda{ @db.save_doc(@doc) }.should raise_error
-      lambda{ @db.delete_attachment(@doc, "test", true) }.should_not raise_error
-    end
-  end
+    #it "should force a delete even if we get a 409" do
+      #@doc['new_attribute'] = 'something new'
+      #@db.put_attachment(@doc, 'test', File.open(File.join(FIXTURE_PATH, 'attachments', 'test.html')).read)
+      ## at this point the revision number changed, if we try to save doc one more time
+      ## we would get a 409.
+      #lambda{ @db.save_doc(@doc) }.should raise_error
+      #lambda{ @db.delete_attachment(@doc, "test", true) }.should_not raise_error
+    #end
+  #end
 
-  describe "POST document with attachment (with funky name)" do
-    before(:each) do
-      @attach = "<html><head><title>My Funky Doc</title></head><body><p>Has words.</p></body></html>"
-      @doc = {
-        "field" => ["some other value"],
-        "_attachments" => {
-          "http://example.com/stuff.cgi?things=and%20stuff" => {
-            "type" => "text/html",
-            "data" => @attach
-          }
-        }
-      }
-      @docid = @db.save_doc(@doc)['id']
-    end
-    it "should save and be indicated" do
-      doc = @db.get(@docid)
-      doc['_attachments']['http://example.com/stuff.cgi?things=and%20stuff']['length'].should == @attach.length
-    end
-    it "should be there" do
-      doc = @db.get(@docid)
-      attachment = @db.fetch_attachment(doc,"http://example.com/stuff.cgi?things=and%20stuff")
-      attachment.should == @attach
-    end
-  end
+  #describe "POST document with attachment (with funky name)" do
+    #before(:each) do
+      #@attach = "<html><head><title>My Funky Doc</title></head><body><p>Has words.</p></body></html>"
+      #@doc = {
+        #"field" => ["some other value"],
+        #"_attachments" => {
+          #"http://example.com/stuff.cgi?things=and%20stuff" => {
+            #"type" => "text/html",
+            #"data" => @attach
+          #}
+        #}
+      #}
+      #@docid = @db.save_doc(@doc)['id']
+    #end
+    #it "should save and be indicated" do
+      #doc = @db.get(@docid)
+      #doc['_attachments']['http://example.com/stuff.cgi?things=and%20stuff']['length'].should == @attach.length
+    #end
+    #it "should be there" do
+      #doc = @db.get(@docid)
+      #attachment = @db.fetch_attachment(doc,"http://example.com/stuff.cgi?things=and%20stuff")
+      #attachment.should == @attach
+    #end
+  #end
 
   describe "PUT (new document with url id)" do
     it "should create the document" do
@@ -448,7 +448,13 @@ describe CouchRest::Database do
       doc = @db.get(@docid)
       doc['yaml'] = ['json', 'word.']
       @db.save_doc doc
-      @db.get(@docid)['yaml'].should == ['json', 'word.']
+      p doc["_id"]
+      p RockingChair::Server.databases["couchrest-test"][doc["_id"]]
+      @db.get(@docid)["_id"].should == doc["_id"]
+      @db.get(@docrev)["_rev"].should == doc["_rev"]
+
+      #@db.get(@docid)['yaml'].should == ['json', 'word.']
+      1.should == 2
     end
     it "should fail to resave without the rev" do
       @doc['them-keys'] = 'huge'

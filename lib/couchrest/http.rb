@@ -36,7 +36,8 @@ module CouchRest
     end
 
     def put(uri, doc=nil, headers={})
-      response = request(:put, uri, doc.to_json, headers)
+      doc = doc.to_json if doc
+      response = request(:put, uri, doc, headers)
       JSON.parse(response.body, :max_nesting => false)
     end
 
@@ -46,7 +47,8 @@ module CouchRest
     end
 
     def post(uri, doc=nil)
-      response = request(:post, uri, doc.to_json)
+      doc = doc.to_json if doc
+      response = request(:post, uri, doc)
       JSON.parse(response.body, :max_nesting => false)
     end
 
