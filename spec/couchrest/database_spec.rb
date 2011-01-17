@@ -662,19 +662,20 @@ describe CouchRest::Database do
     it "should have the bulk_load macro" do
       rs = @db.bulk_load ["doc0", "doc7"]
       rs['rows'].length.should == 2
+      p rs
       rs['rows'][0]['doc']['another'].should == "doc"
     end
   end
   
 
-  describe "compacting a database" do
-    it "should compact the database" do
-      db = @cr.database('couchrest-test')
-      # r = 
-      db.compact!
-      # r['ok'].should == true
-    end
-  end
+  #describe "compacting a database" do
+    #it "should compact the database" do
+      #db = @cr.database('couchrest-test')
+      ## r = 
+      #db.compact!
+      ## r['ok'].should == true
+    #end
+  #end
 
   describe "deleting a database" do
     it "should start with the test database" do
@@ -689,113 +690,113 @@ describe CouchRest::Database do
     end
   end
 
-  describe "simply replicating a database" do
-    before(:each) do
-      @db.save_doc({'_id' => 'test_doc', 'some-value' => 'foo'})
-      @other_db = @cr.database(REPLICATIONDB)
-    end
+  #describe "simply replicating a database" do
+    #before(:each) do
+      #@db.save_doc({'_id' => 'test_doc', 'some-value' => 'foo'})
+      #@other_db = @cr.database(REPLICATIONDB)
+    #end
 
-    shared_examples_for "simply replicated" do
-      it "contains the document from the original database" do
-        doc = @other_db.get('test_doc')
-        doc['some-value'].should == 'foo'
-      end
-    end
+    #shared_examples_for "simply replicated" do
+      #it "contains the document from the original database" do
+        #doc = @other_db.get('test_doc')
+        #doc['some-value'].should == 'foo'
+      #end
+    #end
 
-    describe "via pulling" do
-      before(:each) do
-        @other_db.recreate!
-        @other_db.replicate_from @db
-      end
+    #describe "via pulling" do
+      #before(:each) do
+        #@other_db.recreate!
+        #@other_db.replicate_from @db
+      #end
 
-      it_should_behave_like "simply replicated"
-    end
+      #it_should_behave_like "simply replicated"
+    #end
 
-    describe "via pushing" do
-      before(:each) do
-        @other_db.recreate!
-        @db.replicate_to @other_db
-      end
+    #describe "via pushing" do
+      #before(:each) do
+        #@other_db.recreate!
+        #@db.replicate_to @other_db
+      #end
 
-      it_should_behave_like "simply replicated"
-    end
+      #it_should_behave_like "simply replicated"
+    #end
 
-    describe "implicitly creating target" do
-      describe "via pulling" do
-        before(:each) do
-          @other_db.replicate_from(@db, false, true)
-        end
+    #describe "implicitly creating target" do
+      #describe "via pulling" do
+        #before(:each) do
+          #@other_db.replicate_from(@db, false, true)
+        #end
 
-        it_should_behave_like "simply replicated"
-      end
+        #it_should_behave_like "simply replicated"
+      #end
 
-      describe "via pushing" do
-        before(:each) do
-          @db.replicate_to(@other_db, false, true)
-        end
+      #describe "via pushing" do
+        #before(:each) do
+          #@db.replicate_to(@other_db, false, true)
+        #end
 
-        it_should_behave_like "simply replicated"
-      end
-    end
-  end
+        #it_should_behave_like "simply replicated"
+      #end
+    #end
+  #end
 
-  describe "continuously replicating a database" do
-    before(:each) do
-      @db.save_doc({'_id' => 'test_doc', 'some-value' => 'foo'})
-      @other_db = @cr.database(REPLICATIONDB)
-    end
+  #describe "continuously replicating a database" do
+    #before(:each) do
+      #@db.save_doc({'_id' => 'test_doc', 'some-value' => 'foo'})
+      #@other_db = @cr.database(REPLICATIONDB)
+    #end
 
-    shared_examples_for "continuously replicated" do
-      it "contains the document from the original database" do
-        sleep(1.5) # Allow some time to replicate
-        doc = @other_db.get('test_doc')
-        doc['some-value'].should == 'foo'
-      end
+    #shared_examples_for "continuously replicated" do
+      #it "contains the document from the original database" do
+        #sleep(1.5) # Allow some time to replicate
+        #doc = @other_db.get('test_doc')
+        #doc['some-value'].should == 'foo'
+      #end
 
-      it "contains documents saved after replication initiated" do
-        @db.save_doc({'_id' => 'test_doc_after', 'some-value' => 'bar'})
-        sleep(1.5) # Allow some time to replicate
-        doc = @other_db.get('test_doc_after')
-        doc['some-value'].should == 'bar'
-      end
-    end
+      #it "contains documents saved after replication initiated" do
+        #@db.save_doc({'_id' => 'test_doc_after', 'some-value' => 'bar'})
+        #sleep(1.5) # Allow some time to replicate
+        #doc = @other_db.get('test_doc_after')
+        #doc['some-value'].should == 'bar'
+      #end
+    #end
 
-    describe "via pulling" do
-      before(:each) do
-        @other_db.recreate!
-        @other_db.replicate_from(@db, true)
-      end
+    #describe "via pulling" do
+      #before(:each) do
+        #@other_db.recreate!
+        #@other_db.replicate_from(@db, true)
+      #end
 
-      it_should_behave_like "continuously replicated"
-    end
+      #it_should_behave_like "continuously replicated"
+    #end
 
-    describe "via pushing" do
-      before(:each) do
-        @other_db.recreate!
-        @db.replicate_to(@other_db, true)
-      end
+    #describe "via pushing" do
+      #before(:each) do
+        #@other_db.recreate!
+        #@db.replicate_to(@other_db, true)
+      #end
 
-      it_should_behave_like "continuously replicated"
-    end
+      #it_should_behave_like "continuously replicated"
+    #end
 
-    describe "implicitly creating target" do
-      before(:each) do
-        @other_db.replicate_from(@db, true, true)
-      end
+    #describe "implicitly creating target" do
+      #before(:each) do
+        #@other_db.replicate_from(@db, true, true)
+      #end
 
-      after(:each) do
-        @other_db.delete!
-      end
+      #after(:each) do
+        #@other_db.delete!
+      #end
 
-      describe "via pulling" do
-        it_should_behave_like "continuously replicated"
-      end
+      #describe "via pulling" do
+        #it_should_behave_like "continuously replicated"
+      #end
 
-      describe "via pushing" do
-        it_should_behave_like "continuously replicated"
-      end
-    end
-  end
+      #describe "via pushing" do
+        #it_should_behave_like "continuously replicated"
+      #end
+    #end
+  #end
 
   describe "creating a database" do
     before(:each) do

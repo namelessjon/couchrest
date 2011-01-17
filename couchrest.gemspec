@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency("json", "~> 1.4.6")
   s.add_dependency("httpi", "~> 0.7.3")
+  s.add_dependency("net-http-persistent")
 
   s.add_development_dependency("rspec", "~> 2.2.0")
-end                
-
+end
