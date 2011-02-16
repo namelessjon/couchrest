@@ -15,5 +15,7 @@ Gem::Specification.new do |s|
     "lib/sova/http.rb",
     "lib/sova/server.rb"
   ]
+
+  s.add_dependency "httpi", "~> 0.7.9"
 end
 
