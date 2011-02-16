@@ -1,9 +1,9 @@
 require File.expand_path("../../spec_helper", __FILE__)
 
-describe CouchRest::HTTPError do
+describe Sova::HTTPError do
   before do
     @response = HTTPI::Response.new(404, {"Content-Type" => "text/plain"}, "Not found")
-    @error = CouchRest::HTTPError.new(@response)
+    @error = Sova::HTTPError.new(@response)
   end
 
   it "forwards code" do

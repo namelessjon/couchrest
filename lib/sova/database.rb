@@ -1,16 +1,16 @@
 require 'cgi'
 require "base64"
 
-module CouchRest
+module Sova
   class Database
     attr_reader :server, :host, :name, :root, :uri
     attr_accessor :bulk_save_cache_limit
      
-    # Create a CouchRest::Database adapter for the supplied CouchRest::Server
+    # Create a Sova::Database adapter for the supplied Sova::Server
     # and database name.
     #  
     # ==== Parameters
-    # server<CouchRest::Server>:: database host
+    # server<Sova::Server>:: database host
     # name<String>:: database name
     #
     def initialize(server, name)
@@ -36,7 +36,7 @@ module CouchRest
     # Query the <tt>_all_docs</tt> view. Accepts all the same arguments as view.
     def documents(params = {})
       keys = params.delete(:keys)
-      url = CouchRest.paramify_url "#{@root}/_all_docs", params
+      url = Sova.paramify_url "#{@root}/_all_docs", params
       if keys
         HTTP.post(url, {:keys => keys})
       else
@@ -56,7 +56,7 @@ module CouchRest
     def slow_view(funcs, params = {})
       keys = params.delete(:keys)
       funcs = funcs.merge({:keys => keys}) if keys
-      url = CouchRest.paramify_url "#{@root}/_temp_view", params
+      url = Sova.paramify_url "#{@root}/_temp_view", params
       HTTP.post(url, funcs)
     end
     
@@ -70,7 +70,7 @@ module CouchRest
       name = name.split('/') # I think this will always be length == 2, but maybe not...
       dname = name.shift
       vname = name.join('/')
-      url = CouchRest.paramify_url "#{@root}/_design/#{dname}/_view/#{vname}", params
+      url = Sova.paramify_url "#{@root}/_design/#{dname}/_view/#{vname}", params
       if keys
         HTTP.post(url, {:keys => keys})
       else
@@ -81,7 +81,7 @@ module CouchRest
     # GET a document from CouchDB, by id. Returns a Ruby Hash.
     def get(id, params = {})
       slug = escape_docid(id)
-      url = CouchRest.paramify_url("#{@root}/#{slug}", params)
+      url = Sova.paramify_url("#{@root}/#{slug}", params)
       result = HTTP.get(url)
     end
     
@@ -155,7 +155,7 @@ module CouchRest
           uri = "#{@root}/#{slug}"
           uri << "?batch=ok" if batch
           HTTP.put uri, doc
-        rescue CouchRest::NotFound
+        rescue Sova::NotFound
           p "resource not found when saving even tho an id was passed"
           slug = doc['_id'] = @server.next_uuid
           HTTP.put "#{@root}/#{slug}", doc
@@ -250,7 +250,7 @@ module CouchRest
         new_doc = yield doc # give it to the caller to be updated
         begin
           resp = self.save_doc new_doc # try to PUT the updated doc into the db
-        rescue CouchRest::Conflict => e
+        rescue Sova::Conflict => e
           update_limit -= 1
           last_fail = e
         end
@@ -275,7 +275,7 @@ module CouchRest
     def recreate!
       delete!
       create!
-    rescue CouchRest::NotFound
+    rescue Sova::NotFound
     ensure
       create!
     end
@@ -299,7 +299,7 @@ module CouchRest
     private
     
     def replicate(other_db, continuous, options)
-      raise ArgumentError, "must provide a CouchReset::Database" unless other_db.kind_of?(CouchRest::Database)
+      raise ArgumentError, "must provide a Sova::Database" unless other_db.kind_of?(Sova::Database)
       raise ArgumentError, "must provide a target or source option" unless (options.key?(:target) || options.key?(:source))
       payload = options
       if options.has_key?(:target)
@@ -313,7 +313,7 @@ module CouchRest
 
     def uri_for_attachment(doc, name)
       if doc.is_a?(String)
-        puts "CouchRest::Database#fetch_attachment will eventually require a doc as the first argument, not a doc.id"
+        puts "Sova::Database#fetch_attachment will eventually require a doc as the first argument, not a doc.id"
         docid = doc
         rev = nil
       else

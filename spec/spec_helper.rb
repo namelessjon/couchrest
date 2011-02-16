@@ -1,11 +1,6 @@
 $LOAD_PATH.unshift "lib"
-$LOAD_PATH.unshift "../rocking_chair/lib"
-$LOAD_PATH.unshift "../httpi/lib"
 require "rspec"
-require "couchrest"
-require "rocking_chair"
-
-#CouchRest::HTTP.adapter = :rocking_chair
+require "sova"
 
 unless defined?(FIXTURE_PATH)
   FIXTURE_PATH = File.join(File.dirname(__FILE__), '/fixtures')
@@ -14,6 +9,6 @@ unless defined?(FIXTURE_PATH)
   COUCHHOST = ENV['COUCHHOST'] || "http://127.0.0.1:5984"
   TESTDB    = 'couchrest-test'
   REPLICATIONDB = 'couchrest-test-replication'
-  TEST_SERVER    = CouchRest.new COUCHHOST
+  TEST_SERVER    = Sova.new COUCHHOST
   DB = TEST_SERVER.database(TESTDB)
 end

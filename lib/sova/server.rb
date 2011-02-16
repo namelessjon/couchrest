@@ -1,4 +1,4 @@
-module CouchRest
+module Sova
   class Server
     attr_accessor :uri, :uuid_batch_count, :available_databases
     def initialize(server = 'http://127.0.0.1:5984', uuid_batch_count = 1000)
@@ -11,9 +11,9 @@ module CouchRest
       HTTP.get "#{@uri}/_all_dbs"
     end
   
-    # Returns a CouchRest::Database for the given name
+    # Returns a Sova::Database for the given name
     def database(name)
-      CouchRest::Database.new(self, name)
+      Sova::Database.new(self, name)
     end
   
     # Creates the database if it doesn't exist

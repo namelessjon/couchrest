@@ -1,4 +1,4 @@
 require "./spec/spec_helper.rb"
 
-describe CouchRest::Server do
+describe Sova::Server do
 end

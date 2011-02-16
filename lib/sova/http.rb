@@ -1,7 +1,7 @@
 require "httpi"
 require "forwardable"
 
-module CouchRest
+module Sova
   class HTTPError < StandardError
     extend Forwardable
 
@@ -23,7 +23,7 @@ module CouchRest
     def request method, uri, doc=nil, headers={}
       request = HTTPI::Request.new
       request.url     = uri
-      request.proxy   = CouchRest.proxy if CouchRest.proxy
+      request.proxy   = Sova.proxy if Sova.proxy
       request.body    = doc if doc
       request.headers = {
         "Content-Type" => "application/json",

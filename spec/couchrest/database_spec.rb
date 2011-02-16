@@ -1,8 +1,8 @@
 require File.expand_path("../../spec_helper", __FILE__)
 
-describe CouchRest::Database do
+describe Sova::Database do
   before(:each) do
-    @cr = CouchRest.new(COUCHHOST)
+    @cr = Sova.new(COUCHHOST)
     @db = @cr.database(TESTDB)
     @db.recreate!
   end
@@ -164,7 +164,7 @@ describe CouchRest::Database do
       
       #docs = [{'key' => 'value'}, {'_id' => 'totally-uniq'}]
       #id_docs = [{'key' => 'value', '_id' => 'asdf6sgadkfhgsdfusdf'}, {'_id' => 'totally-uniq'}]
-      #CouchRest.should_receive(:post).with("#{COUCHHOST}/couchrest-test/_bulk_docs", {:docs => id_docs})
+      #Sova.should_receive(:post).with("#{COUCHHOST}/couchrest-test/_bulk_docs", {:docs => id_docs})
       
       #@db.bulk_save(docs)
     #end
@@ -184,7 +184,7 @@ describe CouchRest::Database do
       @db.save_doc({"_id" => "bulk_cache_1", "val" => "test"}, true)
       lambda do
         @db.get('bulk_cache_1')
-      end.should raise_error(CouchRest::NotFound)
+      end.should raise_error(Sova::NotFound)
       @db.bulk_save
       @db.get("bulk_cache_1")["val"].should == "test"
     end
@@ -197,7 +197,7 @@ describe CouchRest::Database do
             {"_id" => "free", "mild" => "yet local"},
             {"another" => ["set","of","keys"]}
           ])
-      rescue CouchRest::Conflict => e
+      rescue Sova::Conflict => e
         # soon CouchDB will provide _which_ docs conflicted
         JSON.parse(e.response.body)['error'].should == 'conflict'
       end
@@ -214,7 +214,7 @@ describe CouchRest::Database do
       r2["lemons"].should == "from texas"
     end
     #it "should use PUT with UUIDs" do
-      #CouchRest.should_receive(:put).and_return({"ok" => true, "id" => "100", "rev" => "55"})
+      #Sova.should_receive(:put).and_return({"ok" => true, "id" => "100", "rev" => "55"})
       #r = @db.save_doc({'just' => ['another document']})      
     #end
     
@@ -412,7 +412,7 @@ describe CouchRest::Database do
     it "should create the document" do
       @docid = "http://example.com/stuff.cgi?things=and%20stuff"
       @db.save_doc({'_id' => @docid, 'will-exist' => 'here'})
-      lambda{@db.save_doc({'_id' => @docid})}.should raise_error(CouchRest::Conflict)
+      lambda{@db.save_doc({'_id' => @docid})}.should raise_error(Sova::Conflict)
       @db.get(@docid)['will-exist'].should == 'here'
     end
   end
@@ -429,7 +429,7 @@ describe CouchRest::Database do
     end
     it "should create the document" do
       @db.save_doc({'_id' => 'my-doc', 'will-exist' => 'here'})
-      lambda{@db.save_doc({'_id' => 'my-doc'})}.should raise_error(CouchRest::Conflict)
+      lambda{@db.save_doc({'_id' => 'my-doc'})}.should raise_error(Sova::Conflict)
     end
   end
   
@@ -482,10 +482,10 @@ describe CouchRest::Database do
       @db.save_doc(td2, true)
       lambda do
         @db.get(td1["_id"])
-      end.should raise_error(CouchRest::NotFound)
+      end.should raise_error(Sova::NotFound)
       lambda do
         @db.get(td2["_id"])
-      end.should raise_error(CouchRest::NotFound)
+      end.should raise_error(Sova::NotFound)
       td3 = {"_id" => "td3", "val" => "foo"}
       @db.save_doc(td3, true)
       @db.get(td1["_id"])["val"].should == td1["val"]
@@ -500,7 +500,7 @@ describe CouchRest::Database do
       @db.save_doc(td1, true)
       lambda do
         @db.get(td1["_id"])
-      end.should raise_error(CouchRest::NotFound)
+      end.should raise_error(Sova::NotFound)
       @db.save_doc(td2)
       @db.get(td1["_id"])["val"].should == td1["val"]
       @db.get(td2["_id"])["val"].should == td2["val"]
@@ -563,7 +563,7 @@ describe CouchRest::Database do
           doc['upvotes'] += 1
           doc
         end
-      end.should raise_error(CouchRest::Conflict)
+      end.should raise_error(Sova::Conflict)
     end
     it "should not fail if update_limit is not reached" do
       limit = 5
@@ -605,7 +605,7 @@ describe CouchRest::Database do
         @db.save_doc({'_id' => @docid, 'will-exist' => 'here'})
       end
       it "should fail without a rev" do
-        lambda{@db.copy_doc @doc, @docid}.should raise_error(CouchRest::Conflict)
+        lambda{@db.copy_doc @doc, @docid}.should raise_error(Sova::Conflict)
       end
       it "should succeed with a rev" do
         @to_be_overwritten = @db.get(@docid)

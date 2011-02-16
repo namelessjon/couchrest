@@ -14,17 +14,17 @@
 
 require 'json'
     
-require 'couchrest/http'
-require 'couchrest/server'
-require 'couchrest/database'
+require 'sova/http'
+require 'sova/server'
+require 'sova/database'
 
-CouchRest::HTTP.adapter = :net_http
+Sova::HTTP.adapter = :net_http
 
 # = CouchDB, close to the metal
-module CouchRest
+module Sova
   VERSION = '1.0.1'
 
-  # The CouchRest module methods handle the basic JSON serialization 
+  # The Sova module methods handle the basic JSON serialization 
   # and deserialization, as well as query parameters. The module also includes
   # some helpers for tasks like instantiating a new Database or Server instance.
   class << self
@@ -76,13 +76,13 @@ module CouchRest
     # returns it after it's been created
     def database! url
       parsed = parse url
-      cr = CouchRest.new(parsed[:host])
+      cr = Sova.new(parsed[:host])
       cr.database!(parsed[:database])
     end
   
     def database url
       parsed = parse url
-      cr = CouchRest.new(parsed[:host])
+      cr = Sova.new(parsed[:host])
       cr.database(parsed[:database])
     end
     
