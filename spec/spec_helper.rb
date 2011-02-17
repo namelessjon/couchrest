@@ -2,8 +2,8 @@ $LOAD_PATH.unshift "lib"
 require "rspec/core"
 require "sova"
 
-$LOAD_PATH.unshift "../rocking_chair/lib"
-require "rocking_chair"
+#$LOAD_PATH.unshift "../rocking_chair/lib"
+#require "rocking_chair"
 
 #Sova::HTTP.adapter = :rocking_chair
 
