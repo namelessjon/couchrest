@@ -1,6 +1,13 @@
 $LOAD_PATH.unshift "lib"
-require "rspec"
+require "rspec/core"
 require "sova"
+
+$LOAD_PATH.unshift "../rocking_chair/lib"
+require "rocking_chair"
+
+#Sova::HTTP.adapter = :rocking_chair
+
+HTTPI.log = false
 
 unless defined?(FIXTURE_PATH)
   FIXTURE_PATH = File.join(File.dirname(__FILE__), '/fixtures')
