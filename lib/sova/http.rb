@@ -22,12 +22,13 @@ module Sova
 
     def request method, uri, doc=nil, headers={}
       request = HTTPI::Request.new
-      request.url     = uri
-      request.proxy   = Sova.proxy if Sova.proxy
-      request.body    = doc if doc
+      request.url = uri
+      request.proxy = Sova.proxy if Sova.proxy
+      request.body = doc if doc
+      request.read_timeout = 1
       request.headers = {
         "Content-Type" => "application/json",
-        "Accept"       => "application/json"
+        "Accept" => "application/json"
       }.merge(headers)
 
       response = HTTPI.request(method, request, adapter)
