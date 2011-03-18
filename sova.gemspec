@@ -1,12 +1,12 @@
 Gem::Specification.new do |s|
-  s.name     = "sova"
-  s.version  = "0.0.3"
+  s.name     = "sovaa"
+  s.version  = "0.0.1"
   s.date     = "2011-02-17"
   s.summary  = "CouchDB library"
-  s.email    = "harry@vangberg.name"
-  s.homepage = "http://github.com/ichverstehe/sova"
+  s.email    = "jonathan.stott@gmail.com"
+  s.homepage = "http://github.com/namelessjon/couchrest"
   s.has_rdoc = true
-  s.authors  = ["Harry Vangberg"]
+  s.authors  = ["Jonathan Stott"]
   s.files    = [
     "README.md", 
 		"sova.gemspec", 
@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
     "lib/sova/server.rb"
   ]
 
-  s.add_dependency "httpi", "~> 0.7.9"
+  s.add_dependency "httpi", "~> 0.8"
   s.add_dependency "yajl-ruby"
   s.add_development_dependency "rspec-core", "~> 2.5.1"
   s.add_development_dependency "rspec-mocks", "~> 2.5.0"
