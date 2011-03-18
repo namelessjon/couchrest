@@ -5,23 +5,23 @@ module Sovaa
       @uri = server
       @uuid_batch_count = uuid_batch_count
     end
-  
+
     # Lists all databases on the server
     def databases
       HTTP.get "#{@uri}/_all_dbs"
     end
-  
+
     # Returns a Sovaa::Database for the given name
     def database(name)
       Sovaa::Database.new(self, name)
     end
-  
+
     # Creates the database if it doesn't exist
     def database!(name)
       create_db(name) rescue nil
       database(name)
     end
-  
+
     # GET the welcome message
     def info
       HTTP.get "#{@uri}/"

@@ -61,7 +61,7 @@ describe Sovaa::Database do
       #rs['rows'][0]['value'].should == 9
     #end
   #end
-  
+
   describe "saving a view" do
     before(:each) do
       @view = {'test' => {'map' => <<-JS
@@ -90,11 +90,11 @@ describe Sovaa::Database do
       @db.get("_design/test")['views'].should == @view
     end
   end
-  
+
   describe "select from an existing view" do
     before(:each) do
       r = @db.save_doc({
-        "_id" => "_design/first", 
+        "_id" => "_design/first",
         :views => {
           :test => {
             :map => "function(doc){for(var w in doc){ if(!w.match(/^_/))emit(w,doc[w])}}"
@@ -146,7 +146,7 @@ describe Sovaa::Database do
       @db.get(@docid)['will-exist'].should == 'here'
     end
   end
-  
+
   describe "POST (adding bulk documents)" do
     it "should add them without ids" do
       rs = @db.bulk_save([
@@ -158,17 +158,17 @@ describe Sovaa::Database do
         @db.get(r['id'])["_rev"].should == r["rev"]
       end
     end
-    
+
     #it "should use uuids when ids aren't provided" do
       #@db.server.stub!(:next_uuid).and_return('asdf6sgadkfhgsdfusdf')
-      
+
       #docs = [{'key' => 'value'}, {'_id' => 'totally-uniq'}]
       #id_docs = [{'key' => 'value', '_id' => 'asdf6sgadkfhgsdfusdf'}, {'_id' => 'totally-uniq'}]
       #Sovaa.should_receive(:post).with("#{COUCHHOST}/couchrest-test/_bulk_docs", {:docs => id_docs})
-      
+
       #@db.bulk_save(docs)
     #end
-    
+
     it "should add them with uniq ids" do
       rs = @db.bulk_save([
           {"_id" => "oneB", "wild" => "and random"},
@@ -203,7 +203,7 @@ describe Sovaa::Database do
       end
     end
   end
-  
+
   describe "new document without an id" do
     it "should start empty" do
       @db.documents["total_rows"].should == 0
@@ -215,11 +215,11 @@ describe Sovaa::Database do
     end
     #it "should use PUT with UUIDs" do
       #Sovaa.should_receive(:put).and_return({"ok" => true, "id" => "100", "rev" => "55"})
-      #r = @db.save_doc({'just' => ['another document']})      
+      #r = @db.save_doc({'just' => ['another document']})
     #end
-    
+
   end
-  
+
   #describe "fetch_attachment" do
     #before do
       #@attach = "<html><head><title>My Doc</title></head><body><p>Has words.</p></body></html>"
@@ -235,17 +235,17 @@ describe Sovaa::Database do
       #}
       #@db.save_doc(@doc)
     #end
-    
+
     ## Depreacated
     ## it "should get the attachment with the doc's _id" do
     ##   @db.fetch_attachment("mydocwithattachment", "test.html").should == @attach
     ## end
-    
+
     #it "should get the attachment with the doc itself" do
       #@db.fetch_attachment(@db.get('mydocwithattachment'), 'test.html').should == @attach
     #end
   #end
-  
+
   #describe "PUT attachment from file" do
     #before(:each) do
       #filename = FIXTURE_PATH + '/attachments/couchdb.png'
@@ -259,7 +259,7 @@ describe Sovaa::Database do
       #r['ok'].should == true
       #doc = @db.get("attach-this")
       #attachment = @db.fetch_attachment(doc,"couchdb.png")
-      #if attachment.respond_to?(:net_http_res)  
+      #if attachment.respond_to?(:net_http_res)
         #attachment.net_http_res.body.should == image
       #else
         #attachment.should == image
@@ -291,7 +291,7 @@ describe Sovaa::Database do
       #attachment.should == @attach
     #end
   #end
-  
+
   #describe "PUT document with attachment stub" do
     #before(:each) do
       #@attach = "<html><head><title>My Doc</title></head><body><p>Has words.</p></body></html>"
@@ -309,7 +309,7 @@ describe Sovaa::Database do
       #doc['field'] << 'another value'
       #@db.save_doc(doc)["ok"].should be_true
     #end
-    
+
     #it 'should be there' do
       #doc = @db.get('mydocwithattachment')
       #attachment = @db.fetch_attachment(doc, 'test.html')
@@ -351,7 +351,7 @@ describe Sovaa::Database do
       #attachment.should == @attach2
     #end
   #end
-  
+
   #describe "DELETE an attachment directly from the database" do
     #before(:each) do
       #doc = {
@@ -368,11 +368,11 @@ describe Sovaa::Database do
     #end
     #it "should delete the attachment" do
       #lambda { @db.fetch_attachment(@doc,'test.html') }.should_not raise_error
-      #@db.delete_attachment(@doc, "test.html")  
+      #@db.delete_attachment(@doc, "test.html")
       #@doc = @db.get('mydocwithattachment') # avoid getting a 409
       #lambda{ @db.fetch_attachment(@doc,'test.html')}.should raise_error
     #end
-    
+
     #it "should force a delete even if we get a 409" do
       #@doc['new_attribute'] = 'something new'
       #@db.put_attachment(@doc, 'test', File.open(File.join(FIXTURE_PATH, 'attachments', 'test.html')).read)
@@ -416,7 +416,7 @@ describe Sovaa::Database do
       @db.get(@docid)['will-exist'].should == 'here'
     end
   end
-  
+
   describe "PUT (new document with id)" do
     it "should start without the document" do
       # r = @db.save_doc({'lemons' => 'from texas', 'and' => 'spain'})
@@ -432,7 +432,7 @@ describe Sovaa::Database do
       lambda{@db.save_doc({'_id' => 'my-doc'})}.should raise_error(Sovaa::Conflict)
     end
   end
-  
+
   describe "PUT (existing document with rev)" do
     before(:each) do
       @db.save_doc({'_id' => 'my-doc', 'will-exist' => 'here'})
@@ -471,7 +471,7 @@ describe Sovaa::Database do
       td = {"_id" => "btd1", "val" => "test"}
       @db.save_doc(td, true)
       @db.instance_variable_get("@bulk_save_cache").should == [td]
-      
+
     end
 
     it "doesn't save to the database until the configured cache size is exceded" do
@@ -534,9 +534,9 @@ describe Sovaa::Database do
       @db.bulk_save
       lambda{@db.get @docid}.should raise_error
     end
-    
+
   end
-  
+
   describe  "UPDATE existing document" do
     before :each do
       @id = @db.save_doc({
@@ -558,7 +558,7 @@ describe Sovaa::Database do
           conflicting_doc = @db.get @id
           conflicting_doc['upvotes'] += 1
           @db.save_doc conflicting_doc
-        
+
           # then try saving it through the update
           doc['upvotes'] += 1
           doc
@@ -583,7 +583,7 @@ describe Sovaa::Database do
       @db.get(@id)['upvotes'].should == 16
     end
   end
-  
+
   describe "COPY existing document" do
     before :each do
       @r = @db.save_doc({'artist' => 'Zappa', 'title' => 'Muffin Man'})
@@ -621,8 +621,8 @@ describe Sovaa::Database do
       end
     end
   end
-  
-  
+
+
   it "should list documents" do
     5.times do
       @db.save_doc({'another' => 'doc', 'will-exist' => 'anywhere'})
@@ -632,7 +632,7 @@ describe Sovaa::Database do
     ds['rows'][0]['id'].should_not be_nil
     ds['total_rows'].should == 5
   end
-  
+
   describe "documents / _all_docs" do
     before(:each) do
       9.times do |i|
@@ -643,7 +643,7 @@ describe Sovaa::Database do
       ds = @db.documents
       ds['rows'].should be_an_instance_of(Array)
       ds['rows'][0]['id'].should == "doc0"
-      ds['total_rows'].should == 9      
+      ds['total_rows'].should == 9
     end
     it "should take query params" do
       ds = @db.documents(:startkey => 'doc0', :endkey => 'doc3')
@@ -666,12 +666,12 @@ describe Sovaa::Database do
       rs['rows'][0]['doc']['another'].should == "doc"
     end
   end
-  
+
 
   #describe "compacting a database" do
     #it "should compact the database" do
       #db = @cr.database('couchrest-test')
-      ## r = 
+      ## r =
       #db.compact!
       ## r['ok'].should == true
     #end
@@ -683,7 +683,7 @@ describe Sovaa::Database do
     end
     it "should delete the database" do
       db = @cr.database('couchrest-test')
-      # r = 
+      # r =
       db.delete!
       # r['ok'].should == true
       @cr.databases.should_not include('couchrest-test')
@@ -803,14 +803,14 @@ describe Sovaa::Database do
       @db = @cr.database('couchrest-test-db_to_create')
       @db.delete! if @cr.databases.include?('couchrest-test-db_to_create')
     end
-    
+
     it "should just work fine" do
       @cr.databases.should_not include('couchrest-test-db_to_create')
       @db.create!
       @cr.databases.should include('couchrest-test-db_to_create')
     end
   end
-  
+
   describe "recreating a database" do
     before(:each) do
       @db = @cr.database('couchrest-test-db_to_create')
@@ -818,13 +818,13 @@ describe Sovaa::Database do
       @cr.databases.include?(@db.name) ? nil : @db.create!
       @cr.databases.include?(@db2.name) ? @db2.delete! : nil
     end
-    
+
     it "should drop and recreate a database" do
        @cr.databases.should include(@db.name)
        @db.recreate!
        @cr.databases.should include(@db.name)
     end
-    
+
     it "should recreate a db even tho it doesn't exist" do
       @cr.databases.should_not include(@db2.name)
       @db2.recreate!

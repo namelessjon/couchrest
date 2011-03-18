@@ -6,7 +6,7 @@ describe Sovaa do
     @cr = Sovaa.new(COUCHHOST)
     begin
       @db = @cr.database(TESTDB)
-      @db.delete! rescue nil      
+      @db.delete! rescue nil
     end
   end
 
@@ -22,10 +22,10 @@ describe Sovaa do
     end
     it "should get info" do
       @cr.info["couchdb"].should == "Welcome"
-      @cr.info.class.should == Hash   
+      @cr.info.class.should == Hash
     end
   end
-  
+
   it "should provide one-time access to uuids" do
     @cr.next_uuid.should_not be_nil
   end

@@ -61,16 +61,16 @@ module Sovaa
       Response.new(response.body, response.headers['ETag'])
     end
 
-    def copy(uri, destination) 
+    def copy(uri, destination)
       headers = {'X-HTTP-Method-Override' => 'COPY', 'Destination' => destination}
       response = request(:post, uri, nil, headers)
       Response.new(response.body, response.headers['ETag'])
-    end 
+    end
 
     private
 
     def http_error response
-      klass = 
+      klass =
         case response.code
         when 404 then
           NotFound

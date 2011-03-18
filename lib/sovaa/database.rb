@@ -5,10 +5,10 @@ module Sovaa
   class Database
     attr_reader :server, :host, :name, :root, :uri
     attr_accessor :bulk_save_cache_limit
-     
+
     # Create a Sovaa::Database adapter for the supplied Sova::Server
     # and database name.
-    #  
+    #
     # ==== Parameters
     # server<Sovaa::Server>:: database host
     # name<String>:: database name
@@ -22,17 +22,17 @@ module Sovaa
       @bulk_save_cache = []
       @bulk_save_cache_limit = 500  # must be smaller than the uuid count
     end
-    
+
     # returns the database's uri
     def to_s
       @root
     end
-    
+
     # GET the database info from CouchDB
     def info
       HTTP.get @root
     end
-    
+
     # Query the <tt>_all_docs</tt> view. Accepts all the same arguments as view.
     def documents(params = {})
       keys = params.delete(:keys)
@@ -49,7 +49,7 @@ module Sovaa
       documents(:keys => ids, :include_docs => true)
     end
     alias :bulk_load :get_bulk
-  
+
     # POST a temporary view function to CouchDB for querying. This is not
     # recommended, as you don't get any performance benefit from CouchDB's
     # materialized views. Can be quite slow on large databases.
@@ -59,10 +59,10 @@ module Sovaa
       url = Sovaa.paramify_url "#{@root}/_temp_view", params
       HTTP.post(url, funcs)
     end
-    
+
     # backwards compatibility is a plus
     alias :temp_view :slow_view
-  
+
     # Query a CouchDB view as defined by a <tt>_design</tt> document. Accepts
     # paramaters as described in http://wiki.apache.org/couchdb/HttpViewApi
     def view(name, params = {}, &block)
@@ -77,20 +77,20 @@ module Sovaa
         HTTP.get url
       end
     end
-    
+
     # GET a document from CouchDB, by id. Returns a Ruby Hash.
     def get(id, params = {})
       slug = escape_docid(id)
       url = Sovaa.paramify_url("#{@root}/#{slug}", params)
       result = HTTP.get(url)
     end
-    
+
     # GET an attachment directly from CouchDB
     def fetch_attachment(doc, name)
       uri = url_for_attachment(doc, name)
       HTTP.request(:get, uri).body
     end
-    
+
     # PUT an attachment directly to CouchDB
     def put_attachment(doc, name, file, options = {})
       docid = escape_docid(doc['_id'])
@@ -98,7 +98,7 @@ module Sovaa
       response = HTTP.request(:put, uri, file, options)
       Response.new(response.body, response.headers['ETag'])
     end
-    
+
     # DELETE an attachment directly from CouchDB
     def delete_attachment(doc, name, force=false)
       uri = url_for_attachment(doc, name)
@@ -151,7 +151,7 @@ module Sovaa
       end
       result = if doc['_id']
         slug = escape_docid(doc['_id'])
-        begin     
+        begin
           uri = "#{@root}/#{slug}"
           uri << "?batch=ok" if batch
           HTTP.put uri, doc
@@ -175,7 +175,7 @@ module Sovaa
       end
       result
     end
-    
+
     # Save a document to CouchDB in bulk mode. See #save_doc's +bulk+ argument.
     def bulk_save_doc(doc)
       save_doc(doc, true)
@@ -185,7 +185,7 @@ module Sovaa
     def batch_save_doc(doc)
       save_doc(doc, false, true)
     end
-    
+
     # POST an array of documents to CouchDB. If any of the documents are
     # missing ids, supply one from the uuid cache.
     #
@@ -195,7 +195,7 @@ module Sovaa
         docs = @bulk_save_cache
         @bulk_save_cache = []
       end
-      if (use_uuids) 
+      if (use_uuids)
         ids, noids = docs.partition{|d|d['_id']}
         uuid_count = [noids.length, @server.uuid_batch_count].max
         noids.each do |doc|
@@ -206,29 +206,29 @@ module Sovaa
       HTTP.post "#{@root}/_bulk_docs", {:docs => docs}
     end
     alias :bulk_delete :bulk_save
-    
+
     # DELETE the document from CouchDB that has the given <tt>_id</tt> and
     # <tt>_rev</tt>.
     #
     # If <tt>bulk</tt> is true (false by default) the deletion is recorded for bulk-saving (bulk-deletion :) later.
     # Bulk saving happens automatically when #bulk_save_cache limit is exceded, or on the next non bulk save.
     def delete_doc(doc, bulk = false)
-      raise ArgumentError, "_id and _rev required for deleting" unless doc['_id'] && doc['_rev']      
+      raise ArgumentError, "_id and _rev required for deleting" unless doc['_id'] && doc['_rev']
       if bulk
         @bulk_save_cache << { '_id' => doc['_id'], '_rev' => doc['_rev'], '_deleted' => true }
         return bulk_save if @bulk_save_cache.length >= @bulk_save_cache_limit
         return { "ok" => true } # Mimic the non-deferred version
       end
-      slug = escape_docid(doc['_id'])        
+      slug = escape_docid(doc['_id'])
       HTTP.delete "#{@root}/#{slug}?rev=#{doc['_rev']}"
     end
-    
+
     # COPY an existing document to a new id. If the destination id currently exists, a rev must be provided.
     # <tt>dest</tt> can take one of two forms if overwriting: "id_to_overwrite?rev=revision" or the actual doc
     # hash with a '_rev' key
     def copy_doc(doc, dest)
       raise ArgumentError, "_id is required for copying" unless doc['_id']
-      slug = escape_docid(doc['_id'])        
+      slug = escape_docid(doc['_id'])
       destination = if dest.respond_to?(:has_key?) && dest['_id'] && dest['_rev']
         "#{dest['_id']}?rev=#{dest['_rev']}"
       else
@@ -236,7 +236,7 @@ module Sovaa
       end
       HTTP.copy "#{@root}/#{slug}", destination
     end
-    
+
     # Updates the given doc by yielding the current state of the doc
     # and trying to update update_limit times. Returns the new doc
     # if the doc was successfully updated without hitting the limit
@@ -259,18 +259,18 @@ module Sovaa
       raise last_fail unless resp['ok']
       new_doc
     end
-    
+
     # Compact the database, removing old document revisions and optimizing space use.
     def compact!
       HTTP.post "#{@root}/_compact"
     end
-    
+
     # Create the database
     def create!
       bool = server.create_db(@name) rescue false
       bool && true
     end
-    
+
     # Delete and re create the database
     def recreate!
       delete!
@@ -297,7 +297,7 @@ module Sovaa
     end
 
     private
-    
+
     def replicate(other_db, continuous, options)
       raise ArgumentError, "must provide a Sovaa::Database" unless other_db.kind_of?(Sova::Database)
       raise ArgumentError, "must provide a target or source option" unless (options.key?(:target) || options.key?(:source))
@@ -329,9 +329,9 @@ module Sovaa
     def url_for_attachment(doc, name)
       @root + uri_for_attachment(doc, name)
     end
-    
-    def escape_docid id      
-      /^_design\/(.*)/ =~ id ? "_design/#{CGI.escape($1)}" : CGI.escape(id) 
+
+    def escape_docid id
+      /^_design\/(.*)/ =~ id ? "_design/#{CGI.escape($1)}" : CGI.escape(id)
     end
 
     def encode_attachments(attachments)

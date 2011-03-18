@@ -1,11 +1,11 @@
 # Copyright 2008 J. Chris Anderson
-# 
+#
 #    Licensed under the Apache License, Version 2.0 (the "License");
 #    you may not use this file except in compliance with the License.
 #    You may obtain a copy of the License at
-# 
+#
 #        http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 #    Unless required by applicable law or agreed to in writing, software
 #    distributed under the License is distributed on an "AS IS" BASIS,
 #    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,7 +23,7 @@ Sovaa::HTTP.adapter = :net_http
 module Sovaa
   VERSION = '1.0.1'
 
-  # The Sovaa module methods handle the basic JSON serialization 
+  # The Sovaa module methods handle the basic JSON serialization
   # and deserialization, as well as query parameters. The module also includes
   # some helpers for tasks like instantiating a new Database or Server instance.
   class << self
@@ -33,7 +33,7 @@ module Sovaa
     def new(*opts)
       Server.new(*opts)
     end
-    
+
     def parse url
       case url
       when /^(https?:\/\/)(.*)\/(.*)\/(.*)/
@@ -60,7 +60,7 @@ module Sovaa
       end
 
       db = nil if db && db.empty?
-      
+
       {
         :host => (scheme || "http://") + (host || "127.0.0.1:5984"),
         :database => db,
@@ -69,7 +69,7 @@ module Sovaa
     end
 
     attr_accessor :proxy
-    
+
     # ensure that a database exists
     # creates it if it isn't already there
     # returns it after it's been created
@@ -78,13 +78,13 @@ module Sovaa
       cr = Sovaa.new(parsed[:host])
       cr.database!(parsed[:database])
     end
-  
+
     def database url
       parsed = parse url
       cr = Sovaa.new(parsed[:host])
       cr.database(parsed[:database])
     end
-    
+
     def paramify_url url, params = {}
       if params && !params.empty?
         query = params.collect do |k,v|
