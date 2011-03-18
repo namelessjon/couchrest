@@ -2,7 +2,7 @@ require "httpi"
 require "uri"
 require "forwardable"
 
-module Sova
+module Sovaa
   class HTTPError < StandardError
     extend Forwardable
 
@@ -26,7 +26,7 @@ module Sova
       request = HTTPI::Request.new
       request.url = uri
       request.auth.basic uri.user, uri.password if uri.user && uri.password
-      request.proxy = Sova.proxy if Sova.proxy
+      request.proxy = Sovaa.proxy if Sova.proxy
       request.body = doc if doc
       request.headers = {
         "Content-Type" => "application/json",

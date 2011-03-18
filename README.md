@@ -1,4 +1,4 @@
-# Sova is a CouchRest fork
+# Sovaa is a CouchRest fork of a CouchRest fork
 
-* Removed a lot of bulk
-* Added HTTPI support
+* Added a bit of bulk back in
+* Use YAJL

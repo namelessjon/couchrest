@@ -5,7 +5,7 @@ require "sova"
 #$LOAD_PATH.unshift "../rocking_chair/lib"
 #require "rocking_chair"
 
-#Sova::HTTP.adapter = :rocking_chair
+#Sovaa::HTTP.adapter = :rocking_chair
 
 HTTPI.log = false
 
@@ -16,6 +16,6 @@ unless defined?(FIXTURE_PATH)
   COUCHHOST = ENV['COUCHHOST'] || "http://127.0.0.1:5984"
   TESTDB    = 'couchrest-test'
   REPLICATIONDB = 'couchrest-test-replication'
-  TEST_SERVER    = Sova.new COUCHHOST
+  TEST_SERVER    = Sovaa.new COUCHHOST
   DB = TEST_SERVER.database(TESTDB)
 end

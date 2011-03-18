@@ -1,4 +1,4 @@
-module Sova
+module Sovaa
   class Server
     attr_accessor :uri, :uuid_batch_count, :available_databases
     def initialize(server = 'http://127.0.0.1:5984', uuid_batch_count = 1000)
@@ -11,9 +11,9 @@ module Sova
       HTTP.get "#{@uri}/_all_dbs"
     end
   
-    # Returns a Sova::Database for the given name
+    # Returns a Sovaa::Database for the given name
     def database(name)
-      Sova::Database.new(self, name)
+      Sovaa::Database.new(self, name)
     end
   
     # Creates the database if it doesn't exist

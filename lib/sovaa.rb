@@ -18,13 +18,13 @@ require 'sova/http'
 require 'sova/server'
 require 'sova/database'
 
-Sova::HTTP.adapter = :net_http
+Sovaa::HTTP.adapter = :net_http
 
 # = CouchDB, close to the metal
-module Sova
+module Sovaa
   VERSION = '1.0.1'
 
-  # The Sova module methods handle the basic JSON serialization 
+  # The Sovaa module methods handle the basic JSON serialization 
   # and deserialization, as well as query parameters. The module also includes
   # some helpers for tasks like instantiating a new Database or Server instance.
   class << self
@@ -76,13 +76,13 @@ module Sova
     # returns it after it's been created
     def database! url
       parsed = parse url
-      cr = Sova.new(parsed[:host])
+      cr = Sovaa.new(parsed[:host])
       cr.database!(parsed[:database])
     end
   
     def database url
       parsed = parse url
-      cr = Sova.new(parsed[:host])
+      cr = Sovaa.new(parsed[:host])
       cr.database(parsed[:database])
     end
     

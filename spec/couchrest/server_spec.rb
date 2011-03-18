@@ -1,4 +1,4 @@
 require "./spec/spec_helper.rb"
 
-describe Sova::Server do
+describe Sovaa::Server do
 end
