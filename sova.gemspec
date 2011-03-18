@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
   ]
 
   s.add_dependency "httpi", "~> 0.7.9"
+  s.add_dependency "yajl-ruby"
   s.add_development_dependency "rspec-core", "~> 2.5.1"
   s.add_development_dependency "rspec-mocks", "~> 2.5.0"
   s.add_development_dependency "rspec-expectations", "~> 2.5.0"

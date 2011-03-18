@@ -199,7 +199,7 @@ describe Sovaa::Database do
           ])
       rescue Sovaa::Conflict => e
         # soon CouchDB will provide _which_ docs conflicted
-        JSON.parse(e.response.body)['error'].should == 'conflict'
+        Yajl::Parser.parse(e.response.body)['error'].should == 'conflict'
       end
     end
   end

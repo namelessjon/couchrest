@@ -39,31 +39,31 @@ module Sovaa
     end
 
     def put(uri, doc=nil, headers={})
-      doc = doc.to_json if doc
+      doc = Yajl::Encoder.encode(doc) if doc
       response = request(:put, uri, doc, headers)
-      JSON.parse(response.body, :max_nesting => false)
+      Yajl::Parser.parse(response.body, :max_nesting => false)
     end
 
     def get(uri)
       response = request(:get, uri)
-      JSON.parse(response.body, :max_nesting => false)
+      Yajl::Parser.parse(response.body, :max_nesting => false)
     end
 
     def post(uri, doc=nil)
-      doc = doc.to_json if doc
+      doc = Yajl::Encoder.encode(doc) if doc
       response = request(:post, uri, doc)
-      JSON.parse(response.body, :max_nesting => false)
+      Yajl::Parser.parse(response.body, :max_nesting => false)
     end
 
     def delete(uri)
       response = request(:delete, uri)
-      JSON.parse(response.body, :max_nesting => false)
+      Yajl::Parser.parse(response.body, :max_nesting => false)
     end
 
     def copy(uri, destination) 
       headers = {'X-HTTP-Method-Override' => 'COPY', 'Destination' => destination}
       response = request(:post, uri, nil, headers)
-      JSON.parse(response.body, :max_nesting => false)
+      Yajl::Parser.parse(response.body, :max_nesting => false)
     end 
 
     private
