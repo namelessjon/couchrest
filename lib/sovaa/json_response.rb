@@ -1,5 +1,5 @@
 module Sovaa
-  class Response < Hash
+  class JsonResponse < Hash
     attr_reader :etag
     def initialize(json, etag)
       super(Yajl::Parser.parse(json))
