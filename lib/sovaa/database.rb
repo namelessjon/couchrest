@@ -96,7 +96,7 @@ module Sovaa
       docid = escape_docid(doc['_id'])
       uri = url_for_attachment(doc, name)
       response = HTTP.request(:put, uri, file, options)
-      Yajl::Parser.parse(response.body)
+      Response.new(response.body, response.headers['ETag'])
     end
     
     # DELETE an attachment directly from CouchDB

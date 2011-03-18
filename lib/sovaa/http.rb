@@ -1,6 +1,7 @@
 require "httpi"
 require "uri"
 require "forwardable"
+require 'sovaa/response'
 
 module Sovaa
   class HTTPError < StandardError
@@ -41,29 +42,29 @@ module Sovaa
     def put(uri, doc=nil, headers={})
       doc = Yajl::Encoder.encode(doc) if doc
       response = request(:put, uri, doc, headers)
-      Yajl::Parser.parse(response.body, :max_nesting => false)
+      Response.new(response.body, response.headers['ETag'])
     end
 
     def get(uri)
       response = request(:get, uri)
-      Yajl::Parser.parse(response.body, :max_nesting => false)
+      Response.new(response.body, response.headers['ETag'])
     end
 
     def post(uri, doc=nil)
       doc = Yajl::Encoder.encode(doc) if doc
       response = request(:post, uri, doc)
-      Yajl::Parser.parse(response.body, :max_nesting => false)
+      Response.new(response.body, response.headers['ETag'])
     end
 
     def delete(uri)
       response = request(:delete, uri)
-      Yajl::Parser.parse(response.body, :max_nesting => false)
+      Response.new(response.body, response.headers['ETag'])
     end
 
     def copy(uri, destination) 
       headers = {'X-HTTP-Method-Override' => 'COPY', 'Destination' => destination}
       response = request(:post, uri, nil, headers)
-      Yajl::Parser.parse(response.body, :max_nesting => false)
+      Response.new(response.body, response.headers['ETag'])
     end 
 
     private
