@@ -17,8 +17,6 @@ require 'sovaa/http'
 require 'sovaa/server'
 require 'sovaa/database'
 
-Sovaa::HTTP.adapter = :net_http
-
 # = CouchDB, close to the metal
 module Sovaa
   VERSION = '1.0.1'
