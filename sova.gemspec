@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
 		"sova.gemspec", 
 		"lib/sova.rb",
     "lib/sova/database.rb",
+    "lib/sova/json_response.rb",
     "lib/sova/http.rb",
     "lib/sova/server.rb"
   ]
