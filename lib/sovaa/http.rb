@@ -27,7 +27,7 @@ module Sovaa
       request = HTTPI::Request.new
       request.url = uri
       request.auth.basic uri.user, uri.password if uri.user && uri.password
-      request.proxy = Sovaa.proxy if Sova.proxy
+      request.proxy = Sovaa.proxy if Sovaa.proxy
       request.body = doc if doc
       request.headers = {
         "Content-Type" => "application/json",
