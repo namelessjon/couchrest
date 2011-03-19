@@ -88,7 +88,7 @@ module Sovaa
     # GET an attachment directly from CouchDB
     def fetch_attachment(doc, name)
       uri = url_for_attachment(doc, name)
-      HTTP.request(:get, uri).body
+      HTTP.request(:get, uri)
     end
 
     # PUT an attachment directly to CouchDB
