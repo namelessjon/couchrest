@@ -13,9 +13,9 @@
 #    limitations under the License.
 require 'yajl'
 
-require 'sova/http'
-require 'sova/server'
-require 'sova/database'
+require 'sovaa/http'
+require 'sovaa/server'
+require 'sovaa/database'
 
 Sovaa::HTTP.adapter = :net_http
 
