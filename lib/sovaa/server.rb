@@ -38,11 +38,16 @@ module Sovaa
       HTTP.post "#{@uri}/_restart"
     end
 
+    # Fetch a list of uuids
+    def uuids(count = @uuid_batch_count)
+      HTTP.get("#{@uri}/_uuids?count=#{count}")["uuids"]
+    end
+
     # Retrive an unused UUID from CouchDB. Server instances manage caching a list of unused UUIDs.
     def next_uuid(count = @uuid_batch_count)
       @uuids ||= []
       if @uuids.empty?
-        @uuids = HTTP.get("#{@uri}/_uuids?count=#{count}")["uuids"]
+        @uuids = uuids
       end
       @uuids.pop
     end
