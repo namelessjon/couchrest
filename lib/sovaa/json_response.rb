@@ -3,7 +3,7 @@ module Sovaa
     attr_reader :etag
     def initialize(json, etag)
       super()
-      self.merge!(Yajl::Parser.parse(json))
+      self.merge!(json)
       @etag = etag
     end
   end

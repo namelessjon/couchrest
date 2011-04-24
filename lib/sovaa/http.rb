@@ -42,29 +42,34 @@ module Sovaa
     def put(uri, doc=nil, headers={})
       doc = Yajl::Encoder.encode(doc) if doc
       response = request(:put, uri, doc, headers)
-      JsonResponse.new(response.body, response.headers['ETag'])
+      parsed_response(response)
     end
 
     def get(uri)
       response = request(:get, uri)
-      JsonResponse.new(response.body, response.headers['ETag'])
+      parsed_response(response)
     end
 
     def post(uri, doc=nil)
       doc = Yajl::Encoder.encode(doc) if doc
       response = request(:post, uri, doc)
-      JsonResponse.new(response.body, response.headers['ETag'])
+      parsed_response(response)
     end
 
     def delete(uri)
       response = request(:delete, uri)
-      JsonResponse.new(response.body, response.headers['ETag'])
+      parsed_response(response)
     end
 
     def copy(uri, destination)
       headers = {'X-HTTP-Method-Override' => 'COPY', 'Destination' => destination}
       response = request(:post, uri, nil, headers)
-      JsonResponse.new(response.body, response.headers['ETag'])
+      parsed_response(response)
+    end
+
+    def parsed_response(response)
+      parsed = Yajl::Parser.parse(response.body)
+      parsed.is_a?(Hash) ? JsonResponse.new(parsed, response.headers['ETag']) ? parsed
     end
 
     private
