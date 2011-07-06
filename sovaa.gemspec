@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name     = "sovaa"
-  s.version  = "0.0.6"
-  s.date     = "2011-03-19"
+  s.version  = "0.0.8"
+  s.date     = "2011-04-24"
   s.summary  = "CouchDB library"
   s.email    = "jonathan.stott@gmail.com"
   s.homepage = "http://github.com/namelessjon/couchrest"
